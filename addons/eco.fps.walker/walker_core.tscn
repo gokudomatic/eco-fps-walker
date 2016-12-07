@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=1]
 
-[ext_resource path="res://addons/eco.fps.walker/simple_offender.gd" type="Script" id=1]
+[ext_resource path="res://addons/eco.fps.walker/walker_core.gd" type="Script" id=1]
 
 [sub_resource type="CapsuleShape" id=1]
 
@@ -43,8 +43,6 @@ damp_override/linear = -1.0
 damp_override/angular = -1.0
 script/script = ExtResource( 1 )
 __meta__ = { "__editor_plugin_screen__":"Script" }
-im_name = ""
-impoint_name = ""
 
 [node name="col1" type="CollisionShape" parent="."]
 
