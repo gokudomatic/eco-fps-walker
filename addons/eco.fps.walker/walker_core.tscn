@@ -1,0 +1,110 @@
+[gd_scene load_steps=4 format=1]
+
+[ext_resource path="res://addons/eco.fps.walker/simple_offender.gd" type="Script" id=1]
+
+[sub_resource type="CapsuleShape" id=1]
+
+radius = 0.8
+height = 1.0
+
+[sub_resource type="RayShape" id=2]
+
+length = 0.3
+
+[node name="npc" type="RigidBody" groups=[ "enemy" ]]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+input/ray_pickable = true
+input/capture_on_drag = false
+shape_count = 2
+shapes/0/shape = SubResource( 1 )
+shapes/0/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.45, 0 )
+shapes/0/trigger = false
+shapes/1/shape = SubResource( 2 )
+shapes/1/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, 0 )
+shapes/1/trigger = false
+collision/layers = 1
+collision/mask = 3
+mode = 2
+mass = 1.0
+friction = 0.0
+bounce = 0.0
+gravity_scale = 1.0
+custom_integrator = true
+continuous_cd = false
+contacts_reported = 8
+contact_monitor = true
+sleeping = false
+can_sleep = false
+axis_lock = 0
+velocity/linear = Vector3( 0, 0, 0 )
+velocity/angular = Vector3( 0, 0, 0 )
+damp_override/linear = -1.0
+damp_override/angular = -1.0
+script/script = ExtResource( 1 )
+__meta__ = { "__editor_plugin_screen__":"Script" }
+im_name = ""
+impoint_name = ""
+
+[node name="col1" type="CollisionShape" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.45, 0 )
+shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="col2" type="CollisionShape" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, 0 )
+shape = SubResource( 2 )
+trigger = false
+_update_shape_index = 1
+
+[node name="leg_ray" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
+enabled = true
+cast_to = Vector3( 0, -0.4, 0 )
+layer_mask = 1
+type_mask = 15
+
+[node name="yaw" type="Spatial" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="adapter" type="Spatial" parent="yaw"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( -0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0 )
+
+[node name="target_ray" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.89698, 0 )
+enabled = true
+cast_to = Vector3( 0, 0, -100 )
+layer_mask = 1
+type_mask = 15
+
+[node name="ray_ground_right" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -0.5 )
+enabled = true
+cast_to = Vector3( 1.2, -4, -2 )
+layer_mask = 1
+type_mask = 1
+
+[node name="ray_ground_left" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -0.5 )
+enabled = true
+cast_to = Vector3( -1.2, -4, -2 )
+layer_mask = 1
+type_mask = 1
+
+
