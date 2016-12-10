@@ -24,7 +24,7 @@ shapes/1/shape = SubResource( 2 )
 shapes/1/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, 0 )
 shapes/1/trigger = false
 collision/layers = 1
-collision/mask = 3
+collision/mask = 1
 mode = 2
 mass = 1.0
 friction = 0.0
@@ -43,6 +43,7 @@ damp_override/linear = -1.0
 damp_override/angular = -1.0
 script/script = ExtResource( 1 )
 __meta__ = { "__editor_plugin_screen__":"Script" }
+target = null
 
 [node name="col1" type="CollisionShape" parent="."]
 
@@ -68,15 +69,6 @@ enabled = true
 cast_to = Vector3( 0, -0.4, 0 )
 layer_mask = 1
 type_mask = 15
-
-[node name="yaw" type="Spatial" parent="."]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-
-[node name="adapter" type="Spatial" parent="yaw"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( -0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0 )
 
 [node name="target_ray" type="RayCast" parent="."]
 

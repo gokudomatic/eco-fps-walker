@@ -14,10 +14,12 @@ class Link:
 	var next_state=null
 	var type=null
 	var timeout=0
+	var timer=null
 	var condition_owner=null
 	var condition_method=null
 	var condition_expected=true
 
+var timers={}
 var groups={}
 var states={}
 var state_time=0
@@ -28,21 +30,28 @@ var links=[]
 signal state_changed(state_from,state_to,params)
 
 func process(delta):
-	if current_state==null or current_state_object==null or current_state_object.links==null:
+	if current_state==null or current_state_object==null or links.size()==0:
 		return
 	
 	state_time+=delta
-	for link in current_state_object.links:
+	for t in timers.keys():
+		timers[t]+=delta
+	
+	for link in links:
 		var condition=true
 		var found=false
 		if link.type=="timeout" or link.type=="timed condition":
-			condition=state_time>link.timeout
+			if link.timer!=null:
+				condition=timers[link.timer]>link.timeout
+			else:
+				condition=state_time>link.timeout
 			found=true
 		if condition and (link.type=="condition" or link.type=="timed condition") and link.condition_owner.has_method(link.condition_method):
 			condition=condition and link.condition_owner.callv(link.condition_method,[])==link.condition_expected
 			found=true
 		if condition and found:
 			set_state(link.next_state)
+			return
 
 func set_state(new_state):
 	state_time=0
@@ -68,8 +77,9 @@ func _fill_links(group):
 	var group_instance=groups[group]
 	if group_instance.parent!=null:
 		_fill_links(group_instance.parent)
-	for l in group_instance.links:
-		links.append(l)
+	if group_instance.links!=null:
+		for l in group_instance.links:
+			links.append(l)
 
 func add_group(name,attributes=null,parent=null):
 	var instance=Group.new()
@@ -104,13 +114,20 @@ func _add_link(instance,next_state,type,params):
 			link.condition_expected=params[2]
 	elif type=="timeout":
 		link.timeout=params[0]
+		if params.size()>1:
+			link.timer=params[1]
 	elif type=="timed condition":
 		link.timeout=params[0]
 		link.condition_owner=params[1]
 		link.condition_method=params[2]
 		if params.size()>3:
 			link.condition_expected=params[3]
+		if params.size()>4:
+			link.timer=params[4]
 	
 	if instance.links==null:
 		instance.links=[]
 	instance.links.append(link)
+
+func add_timer(name):
+	timers[name]=0

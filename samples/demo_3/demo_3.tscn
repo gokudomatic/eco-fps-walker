@@ -1,130 +1,16 @@
 [gd_scene load_steps=8 format=1]
 
 [ext_resource path="res://addons/eco.fps.walker/walker_core.tscn" type="PackedScene" id=1]
+[ext_resource path="res://samples/demo_2/map.scn" type="PackedScene" id=2]
 
-[sub_resource type="FixedMaterial" id=2]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 4.48416e-44
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="FixedMaterial" id=3]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 1.96182e-44
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="PlaneShape" id=4]
-
-plane = Plane( 0, 1, 0, 0 )
-
-[sub_resource type="FixedMaterial" id=5]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 0.0
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.289062, 0.18242, 0.111786, 1 )
-params/specular = Color( 0, 0, 0, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="Environment" id=6]
+[sub_resource type="Environment" id=1]
 
 ambient_light/enabled = true
-ambient_light/color = Color( 0.914062, 0.914062, 0.914062, 1 )
+ambient_light/color = Color( 1, 1, 1, 1 )
 ambient_light/energy = 1.0
 fxaa/enabled = false
-background/mode = 2
-background/color = Color( 0.00418091, 0.0871458, 0.535156, 1 )
+background/mode = 1
+background/color = Color( 0, 0, 0, 1 )
 background/energy = 1.0
 background/scale = 1.0
 background/glow = 0.0
@@ -161,7 +47,7 @@ bcs/contrast = 1.0
 bcs/saturation = 1.0
 srgb/enabled = false
 
-[sub_resource type="FixedMaterial" id=7]
+[sub_resource type="FixedMaterial" id=2]
 
 flags/visible = true
 flags/double_sided = false
@@ -178,8 +64,8 @@ fixed_flags/use_color_array = false
 fixed_flags/use_point_size = false
 fixed_flags/discard_alpha = false
 fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 1, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
+params/diffuse = Color( 0.03125, 0, 1, 1 )
+params/specular = Color( 0, 0, 0, 1 )
 params/emission = Color( 0, 0, 0, 1 )
 params/specular_exp = 40
 params/detail_mix = 1.0
@@ -198,19 +84,152 @@ textures/glow_tc = 0
 textures/normal_tc = 0
 textures/shade_param_tc = 0
 
-[node name="world" type="Spatial"]
+[sub_resource type="FixedMaterial" id=3]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 1.875
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 1, 0.00390625, 0.00390625, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="FixedMaterial" id=4]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 0.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 0.546875, 0.53077, 0.134583, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="FixedMaterial" id=5]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 0.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 0.0545194, 0.261719, 0.0184021, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[node name="Spatial" type="Spatial"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+environment = SubResource( 1 )
+
 [node name="npc" parent="." instance=ExtResource( 1 )]
 
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.27983, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12694, 3.76658, 8.85242 )
+collision/mask = 2
 target = NodePath("../target")
+navigation = NodePath("../Navigation")
+
+[node name="Camera" type="Camera" parent="npc"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 0.908574, 0.417724, 0, -0.417724, 0.908574, 0, 8.32907, 8.47772 )
+projection = 0
+fov = 60.0
+near = 0.1
+far = 100.0
+keep_aspect = 1
+current = false
+visible_layers = 1048575
+environment = null
+h_offset = 0.0
+v_offset = 0.0
 
 [node name="TestCube" type="TestCube" parent="npc"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.237504, 0, 0, 0, 0.237504, 0, 0, 0, 0.237504, 0, 0.445426, 0 )
+transform/local = Transform( 0.455835, 0, 0, 0, 0.455835, 0, 0, 0, 0.455835, 0, 0.778903, 0 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 2 )
@@ -226,10 +245,10 @@ geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
 
-[node name="TestCube1" type="TestCube" parent="npc"]
+[node name="target" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.039546, 0, 0, 0, 0.039546, 0, 0, 0, 1, 0, 0.445426, -1.21137 )
+transform/local = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 12.4864, 23.2817, -159.6 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 3 )
@@ -245,35 +264,29 @@ geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
 
-[node name="StaticBody" type="StaticBody" parent="."]
+[node name="Navigation" type="Navigation" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-input/ray_pickable = true
-input/capture_on_drag = false
-shape_count = 1
-shapes/0/shape = SubResource( 4 )
-shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shapes/0/trigger = false
-collision/layers = 1
-collision/mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
+up_vector = Vector3( 0, 1, 0 )
 
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+[node name="map" parent="Navigation" instance=ExtResource( 2 )]
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shape = SubResource( 4 )
-trigger = false
-_update_shape_index = 0
+transform/local = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 
-[node name="Quad" type="Quad" parent="StaticBody"]
+[node name="npc 2" parent="." instance=ExtResource( 1 )]
+
+transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, 10.6866, 0.379697, 10.1786 )
+collision/mask = 2
+target = NodePath("../target")
+navigation = NodePath("../Navigation")
+
+[node name="TestCube1" type="TestCube" parent="npc 2"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 0.455835, 0, 1.86265e-09, 0, 0.455835, 0, -1.86265e-09, 0, 0.455835, 0, 0.77, 0 )
 layers = 1
 geometry/visible = true
-geometry/material_override = SubResource( 5 )
+geometry/material_override = SubResource( 4 )
 geometry/cast_shadow = 1
 geometry/receive_shadows = true
 geometry/range_begin = 0.0
@@ -285,38 +298,21 @@ geometry/depth_scale = false
 geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
-quad/axis = 1
-quad/size = Vector2( 100, 100 )
-quad/offset = Vector2( 0, 0 )
-quad/centered = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="npc3" parent="." instance=ExtResource( 1 )]
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-environment = SubResource( 6 )
+transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, -10.3337, 11.6214, -7.97729 )
+collision/mask = 2
+target = NodePath("../target")
+navigation = NodePath("../Navigation")
 
-[node name="Camera" type="Camera" parent="."]
+[node name="TestCube1" type="TestCube" parent="npc3"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 0.844581, 0.535428, 0, -0.535428, 0.844581, 0, 6.94647, 11.2051 )
-projection = 0
-fov = 60.0
-near = 0.1
-far = 100.0
-keep_aspect = 1
-current = false
-visible_layers = 1048575
-environment = null
-h_offset = 0.0
-v_offset = 0.0
-
-[node name="target" type="TestCube" parent="."]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.154421, 0, 0, 0, 1, 0, 0, 0, 0.154421, 1.50195, 0.849218, 3.0288 )
+transform/local = Transform( 0.455835, 0, 1.86265e-09, 0, 0.455835, 0, -1.86265e-09, 0, 0.455835, 0, 0.77, 0 )
 layers = 1
 geometry/visible = true
-geometry/material_override = SubResource( 7 )
+geometry/material_override = SubResource( 5 )
 geometry/cast_shadow = 1
 geometry/receive_shadows = true
 geometry/range_begin = 0.0
