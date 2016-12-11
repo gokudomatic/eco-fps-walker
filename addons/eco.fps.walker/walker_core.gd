@@ -51,11 +51,11 @@ func _ready():
 
 func _init_fsm():
 	fsm_action=preload("fsm.gd").new()
-	fsm_action.add_group("main")
+	fsm_action.add_group("main",{follow=false})
 	fsm_action.add_state("decide",null,"main")
-	fsm_action.add_state("wait",{move=false,follow=false},"main")
-	fsm_action.add_state("turn",{move=false,follow=false},"main")
-	fsm_action.add_state("move",{move=true,follow=false},"main")
+	fsm_action.add_state("wait",{move=false},"main")
+	fsm_action.add_state("turn",{move=false},"main")
+	fsm_action.add_state("move",{move=true},"main")
 	fsm_action.add_state("sleep",{move=false,follow=false})
 	
 	fsm_action.add_state_link("wait","decide","timeout",[0.2])
@@ -63,7 +63,7 @@ func _init_fsm():
 	fsm_action.add_state_link("turn","decide","timeout",[1])
 	fsm_action.add_state_link("sleep","decide","timeout",[5])
 	
-	fsm_action.add_group_link("main","sleep","condition",[self,"fsm_is_near_target",true])
+	fsm_action.add_state_link("main","sleep","condition",[self,"fsm_is_near_target",true])
 	fsm_action.add_state_link("decide","wait","condition",[self,"fsm_has_no_target",true])
 	fsm_action.add_state_link("decide","move","condition",[self,"fsm_has_no_target",false])
 	
@@ -120,59 +120,61 @@ func do_current_action(state):
 	
 	# set rotation
 
-	var target_z
-	if current_action.follow_target:
-		# when attacking, the npc always face the target
-		target_z=target_ray.get_global_transform().basis.z
-	else:
-		if current_waypoint!=null:
-			var offset=Vector3(0,0,0)
-			if current_target!=null:
-				offset=get_target_offset(current_target)
-			var tt=current_t.looking_at(current_waypoint+offset,Vector3(0,1,0))
-			target_z=tt.basis.z
+	if leg_ray.is_colliding():
+		var target_z
+		if current_action.follow_target:
+			# when attacking, the npc always face the target
+			target_z=target_ray.get_global_transform().basis.z
 		else:
-			target_z=current_direction
-	
-	var vx=Vector2(current_z.x,current_z.z).angle_to(Vector2(target_z.x,target_z.z))
-	
-	if not current_action.follow_target:
-		var gs_left=check_ground_sensor(ground_sensor_l)
-		var gs_right=check_ground_sensor(ground_sensor_r)
-		var is_new_hole_l=gs_left and !old_sensor_status_l
-		var is_new_hole_r=gs_right and !old_sensor_status_r
-		
-		if gs_left and gs_right and not (is_new_hole_l and is_new_hole_r) and (is_new_hole_r or is_new_hole_l):
-			is_new_hole_r=true
-			is_new_hole_l=true
-		
-		old_sensor_status_r=gs_right
-		old_sensor_status_l=gs_left
-		
-		var new_vx=vx
-		if is_new_hole_l and is_new_hole_r:
-			new_vx=PI
-			calculate_destination()
-			fsm_action.set_state("turn")
-			state.set_linear_velocity(Vector3(0,0,0))
-		elif is_new_hole_l or is_new_hole_r:
-			if is_new_hole_l:
-				new_vx=0+PI/6
+			if current_waypoint!=null:
+				var offset=Vector3(0,0,0)
+				if current_target!=null:
+					offset=get_target_offset(current_target)
+				var tt=current_t.looking_at(current_waypoint+offset,Vector3(0,1,0))
+				target_z=tt.basis.z
 			else:
-				new_vx=-PI/6
+				target_z=current_direction
 		
-		if new_vx!=vx:
-			is_temp_waypoint=true
-			is_temp_side_right=is_new_hole_r
-			vx=new_vx
-			var dir=current_z.rotated(UP,new_vx).normalized()*4
-			current_waypoint=get_global_transform().origin-dir
-	 
-	# if not aiming at target, turn at constant speed
-	if not (abs(vx)<0.3):
-		vx=sign(vx)
+		var vx=Vector2(current_z.x,current_z.z).angle_to(Vector2(target_z.x,target_z.z))
+		
+		if not current_action.follow_target:
+			var gs_left=check_ground_sensor(ground_sensor_l)
+			var gs_right=check_ground_sensor(ground_sensor_r)
+			var is_new_hole_l=gs_left and !old_sensor_status_l
+			var is_new_hole_r=gs_right and !old_sensor_status_r
+			
+			if gs_left and gs_right and not (is_new_hole_l and is_new_hole_r) and (is_new_hole_r or is_new_hole_l):
+				is_new_hole_r=true
+				is_new_hole_l=true
+			
+			old_sensor_status_r=gs_right
+			old_sensor_status_l=gs_left
+			
+			var new_vx=vx
+			if is_new_hole_l and is_new_hole_r:
+				new_vx=PI
+				calculate_destination()
+				fsm_action.set_state("turn")
+				state.set_linear_velocity(Vector3(0,0,0))
+			elif is_new_hole_l or is_new_hole_r:
+				if is_new_hole_l:
+					new_vx=0+PI/6
+				else:
+					new_vx=-PI/6
+			
+			if new_vx!=vx:
+				is_temp_waypoint=true
+				is_temp_side_right=is_new_hole_r
+				vx=new_vx
+				var dir=current_z.rotated(UP,new_vx).normalized()*4
+				current_waypoint=get_global_transform().origin-dir
+		 
+		# if not aiming at target, turn at constant speed
+		if not (abs(vx)<0.3):
+			vx=sign(vx)
+		
+		state.set_angular_velocity(Vector3(0,vx*ANGULAR_SPEED,0))
 	
-	state.set_angular_velocity(Vector3(0,vx*ANGULAR_SPEED,0))
 	state.integrate_forces();
 	
 #	var vel_speed=state.get_linear_velocity().length()/walk_speed;

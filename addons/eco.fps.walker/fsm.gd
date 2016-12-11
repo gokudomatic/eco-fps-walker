@@ -61,7 +61,33 @@ func set_state(new_state):
 	current_state_object=states[current_state]
 	_rebuild_links()
 	
-	emit_signal("state_changed",old_state,new_state,current_state_object.attributes)
+	emit_signal("state_changed",old_state,new_state,get_groups_attributes())
+
+func get_groups_attributes():
+	var attributes
+	if current_state_object.parent!=null:
+		attributes=get_group_attributes(current_state_object.parent)
+		if current_state_object.attributes!=null:
+			for a in current_state_object.attributes.keys():
+				attributes[a]=current_state_object.attributes[a]
+	else:
+		attributes=current_state_object.attributes
+	return attributes
+
+func get_group_attributes(group_name):
+	var attributes
+	var g=groups[group_name]
+	if g.parent!=null:
+		attributes=get_group_attributes(g.parent)
+		if g.attributes!=null:
+			for a in g.attributes.keys():
+				attributes[a]=current_state_object.attributes[a]
+	else:
+		attributes=g.attributes
+	if attributes==null:
+		return {}
+	else:
+		return attributes
 
 func _rebuild_links():
 	links=[]
@@ -83,6 +109,8 @@ func _fill_links(group):
 
 func add_group(name,attributes=null,parent=null):
 	var instance=Group.new()
+	if attributes!=null:
+		instance.attributes=attributes
 	if parent!=null:
 		instance.parent=parent
 	groups[name]=instance
@@ -95,13 +123,11 @@ func add_state(name,attributes=null,group=null):
 		instance.parent=group
 	states[name]=instance
 
-func add_group_link(group,next_state,type,params):
-	if groups.has(group):
-		_add_link(groups[group],next_state,type,params)
-
 func add_state_link(state,next_state,type,params):
 	if states.has(state):
 		_add_link(states[state],next_state,type,params)
+	elif groups.has(state):
+		_add_link(groups[state],next_state,type,params)
 
 func _add_link(instance,next_state,type,params):
 	var link=Link.new()
