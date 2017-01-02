@@ -250,10 +250,13 @@ geometry/baked_light_tex_id = 0
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 input/ray_pickable = true
 input/capture_on_drag = false
-shape_count = 1
+shape_count = 2
 shapes/0/shape = SubResource( 3 )
 shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 shapes/0/trigger = false
+shapes/1/shape = SubResource( 3 )
+shapes/1/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+shapes/1/trigger = false
 collision/layers = 1
 collision/mask = 1
 friction = 1.0
@@ -267,6 +270,14 @@ _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 3 )
 trigger = false
 _update_shape_index = 0
+
+[node name="CollisionShape1" type="CollisionShape" parent="StaticBody"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+shape = SubResource( 3 )
+trigger = false
+_update_shape_index = 1
 
 [node name="Quad" type="Quad" parent="StaticBody"]
 
@@ -313,7 +324,7 @@ v_offset = 0.0
 [node name="target" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.154421, 0, 0, 0, 1, 0, 0, 0, 0.154421, 1.50195, 0.849218, 3.0288 )
+transform/local = Transform( 0.154421, 0, 0, 0, 1, 0, 0, 0, 0.154421, -5.33547, 0.849218, 3.0288 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 6 )

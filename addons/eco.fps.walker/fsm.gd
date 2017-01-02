@@ -29,7 +29,7 @@ var links=[]
 
 signal state_changed(state_from,state_to,params)
 
-func process(delta):
+func process(delta=0):
 	if current_state==null or current_state_object==null or links.size()==0:
 		return
 	
@@ -47,7 +47,7 @@ func process(delta):
 				condition=state_time>link.timeout
 			found=true
 		if condition and (link.type=="condition" or link.type=="timed condition") and link.condition_owner.has_method(link.condition_method):
-			condition=condition and link.condition_owner.callv(link.condition_method,[])==link.condition_expected
+			condition=condition and (link.condition_owner.callv(link.condition_method,[])==link.condition_expected)
 			found=true
 		if condition and found:
 			set_state(link.next_state)
@@ -67,11 +67,11 @@ func get_groups_attributes():
 	var attributes
 	if current_state_object.parent!=null:
 		attributes=get_group_attributes(current_state_object.parent)
-		if current_state_object.attributes!=null:
-			for a in current_state_object.attributes.keys():
-				attributes[a]=current_state_object.attributes[a]
 	else:
-		attributes=current_state_object.attributes
+		attributes={}
+	if current_state_object.attributes!=null:
+		for a in current_state_object.attributes.keys():
+			attributes[a]=current_state_object.attributes[a]
 	return attributes
 
 func get_group_attributes(group_name):
@@ -79,22 +79,20 @@ func get_group_attributes(group_name):
 	var g=groups[group_name]
 	if g.parent!=null:
 		attributes=get_group_attributes(g.parent)
-		if g.attributes!=null:
-			for a in g.attributes.keys():
-				attributes[a]=current_state_object.attributes[a]
 	else:
-		attributes=g.attributes
-	if attributes==null:
-		return {}
-	else:
-		return attributes
+		attributes={}
+	if g.attributes!=null:
+		for a in g.attributes.keys():
+			attributes[a]=g.attributes[a]
+	return attributes
 
 func _rebuild_links():
 	links=[]
 	if current_state_object.parent!=null:
 		_fill_links(current_state_object.parent)
-	for l in current_state_object.links:
-		links.append(l)
+	if current_state_object.links!=null:
+		for l in current_state_object.links:
+			links.append(l)
 
 func _fill_links(group):
 	if not groups.has(group):
@@ -123,7 +121,7 @@ func add_state(name,attributes=null,group=null):
 		instance.parent=group
 	states[name]=instance
 
-func add_state_link(state,next_state,type,params):
+func add_link(state,next_state,type,params):
 	if states.has(state):
 		_add_link(states[state],next_state,type,params)
 	elif groups.has(state):

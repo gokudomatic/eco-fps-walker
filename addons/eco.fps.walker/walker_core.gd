@@ -1,9 +1,13 @@
 extends RigidBody
 
+export(float) var body_radius=0.8
+export(float) var body_height=1
+export(float) var leg_length=0.3
+
 const UP=Vector3(0,1,0)
 export(NodePath) var target setget set_target
 export(NodePath) var navigation setget set_navigation
-var current_target=null
+var current_target_ref=null
 var navmesh=null
 
 const ANGULAR_SPEED=4
@@ -43,11 +47,27 @@ const walk_speed = 3;
 const max_accel = 0.02;
 const air_accel = 0.05;
 
+# signals -----------------------------------
+signal walk_speed_changed(speed)
+signal action_changed(name)
+
 func _ready():
+#	_init_collision_body()
+	
+	leg_ray.add_exception_rid(get_rid())
 	target_ray.add_exception_rid(get_rid())
 	_init_fsm()
 	set_target(target)
 	set_navigation(navigation)
+
+func _init_collision_body():
+	var b_shape=get_node("body").get_shape()
+	b_shape.set_radius(body_radius)
+	b_shape.set_height(body_height)
+	get_node("leg").get_shape().set_length(leg_length)
+	get_node("leg").set_translation(Vector3(0,leg_length,0))
+	
+	get_node("body").set_translation(Vector3(0,0.5*body_height+body_radius+leg_length,0))
 
 func _init_fsm():
 	fsm_action=preload("fsm.gd").new()
@@ -58,22 +78,22 @@ func _init_fsm():
 	fsm_action.add_state("move",{move=true},"main")
 	fsm_action.add_state("sleep",{move=false,follow=false})
 	
-	fsm_action.add_state_link("wait","decide","timeout",[0.2])
-	fsm_action.add_state_link("move","decide","timeout",[2])
-	fsm_action.add_state_link("turn","decide","timeout",[1])
-	fsm_action.add_state_link("sleep","decide","timeout",[5])
+	fsm_action.add_link("wait","decide","timeout",[0.2])
+	fsm_action.add_link("move","decide","timeout",[2])
+	fsm_action.add_link("turn","decide","timeout",[1])
+	fsm_action.add_link("sleep","decide","timeout",[5])
 	
-	fsm_action.add_state_link("main","sleep","condition",[self,"fsm_is_near_target",true])
-	fsm_action.add_state_link("decide","wait","condition",[self,"fsm_has_no_target",true])
-	fsm_action.add_state_link("decide","move","condition",[self,"fsm_has_no_target",false])
+	fsm_action.add_link("main","sleep","condition",[self,"fsm_is_near_target",true])
+	fsm_action.add_link("decide","wait","condition",[self,"fsm_has_no_target",true])
+	fsm_action.add_link("decide","move","condition",[self,"fsm_has_no_target",false])
 	
 	fsm_action.set_state("decide")
 	
 	fsm_action.connect("state_changed",self,"_action_state_changed")
 
 func _integrate_forces(state):
-	if current_target!=null:
-		var target_transform=target_ray.get_global_transform().looking_at(current_target.get_global_transform().origin+get_target_offset(current_target),UP).orthonormalized()
+	if get_target():
+		var target_transform=target_ray.get_global_transform().looking_at(get_target().get_global_transform().origin+get_target_offset(get_target()),UP).orthonormalized()
 		target_ray.set_global_transform(target_transform)
 	else:
 		target_ray.set_rotation(Vector3(0,0,0))
@@ -111,9 +131,8 @@ func do_current_action(state):
 		diff -= vertdiff; # we remove vertical velocity temporarely for working only with horizontal velocity
 		diff = diff.normalized() * clamp(diff.length(), 0, max_accel / state.get_step());
 		diff += vertdiff; # vertical velocity is put back
-		if not no_move:
-			apply_impulse(Vector3(), diff * get_mass());
-		
+		if not no_move :
+			apply_impulse(Vector3(), diff * get_mass())
 	else:
 		# is falling
 		apply_impulse(Vector3(), direction * air_accel * get_mass());
@@ -128,8 +147,8 @@ func do_current_action(state):
 		else:
 			if current_waypoint!=null:
 				var offset=Vector3(0,0,0)
-				if current_target!=null:
-					offset=get_target_offset(current_target)
+				if get_target():
+					offset=get_target_offset(get_target())
 				var tt=current_t.looking_at(current_waypoint+offset,Vector3(0,1,0))
 				target_z=tt.basis.z
 			else:
@@ -177,25 +196,25 @@ func do_current_action(state):
 	
 	state.integrate_forces();
 	
-#	var vel_speed=state.get_linear_velocity().length()/walk_speed;
-#	var speed=state.get_angular_velocity().length()*0.1+vel_speed;
-#	model.set_walk_speed(speed)
+	var vel_speed=state.get_linear_velocity().length()/walk_speed;
+	var speed=state.get_angular_velocity().length()*0.1+vel_speed;
+	emit_signal("walk_speed_changed",speed)
 
 func calculate_destination(force_recalculate=false):
 	var offset=Vector3(0,0,0)
-	if current_target!=null:
-		offset=get_target_offset(current_target)
+	if get_target():
+		offset=get_target_offset(get_target())
 	
-	if current_target!=null and navmesh!=null:
+	if get_target() and navmesh!=null:
 		var did_reach_wpt=current_waypoint!=null and (current_waypoint-get_translation()).length()<WAYPOINT_ERROR_DELTA
 		if force_recalculate or current_waypoint==null or did_reach_wpt or waypoint_timeout<=0:
 			_update_waypoint(did_reach_wpt)
 	else:
 		var curr_pos
-		if current_target!=null:
-			curr_pos=current_target.get_global_transform().origin
+		if get_target():
+			curr_pos=get_target().get_global_transform().origin
 		else:
-			curr_pos=get_global_transform().origin
+			 curr_pos=get_waypoint_no_target()
 		
 		if navmesh!=null:
 			current_waypoint=navmesh.get_closest_point(curr_pos)
@@ -208,6 +227,9 @@ func calculate_destination(force_recalculate=false):
 	if (current_direction+old_direction).length()<1.2:
 		fsm_action.set_state("turn")
 
+func get_waypoint_no_target():
+	return get_global_transform().origin
+
 func _update_waypoint(reached_wpt):
 	var current_t=get_global_transform()
 	var cur_dir=current_t.basis.z
@@ -215,7 +237,7 @@ func _update_waypoint(reached_wpt):
 	#convert start and end points to local
 	var navt=navmesh.get_global_transform()
 	var local_begin=navt.xform_inv(current_t.origin)
-	var local_end=navt.xform_inv(current_target.get_global_transform().origin)
+	var local_end=navt.xform_inv(get_target().get_global_transform().origin)
 	
 	#calculate path
 	var begin=navmesh.get_closest_point(local_begin)
@@ -294,31 +316,48 @@ func check_ground_sensor(sensor):
 		return true
 
 func _action_state_changed(state_from,state_to,params):
+	
 	if state_to=="move":
 		calculate_destination()
 	
 	if action_states.has(state_to):
 		current_action.move=params.move
 		current_action.follow_target=params.follow
+	
+	emit_signal("action_changed",state_to)
 
 func get_target_offset(target):
 	return Vector3(0,0,0)
 
 func fsm_has_no_target():
-	return current_target==null
+	return !get_target()
 
 func fsm_is_near_target():
-	if current_target==null:
+	if !get_target():
 		return false
 	else:
-		return current_target.get_global_transform().origin.distance_to(get_global_transform().origin)<TARGET_ERROR_DELTA
+		return get_target().get_global_transform().origin.distance_to(get_global_transform().origin)<TARGET_ERROR_DELTA
 
 func set_target(t):
 	target=t
 	if target==null:
-		current_target=null
+		current_target_ref=null
 	else:
-		current_target=get_node(t)
+		if typeof(t)==TYPE_STRING or typeof(t)==TYPE_NODE_PATH:
+			current_target_ref=weakref(get_node(t))
+		else:
+			current_target_ref=weakref(t)
+
+func get_target():
+	var result
+	if current_target_ref==null:
+		result=false
+	else:
+		result=current_target_ref.get_ref()
+	
+	if !result and current_waypoint!=null:
+		current_waypoint=null
+	return result
 
 func set_navigation(n):
 	navigation=n

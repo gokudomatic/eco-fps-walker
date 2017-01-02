@@ -16,6 +16,15 @@ func _ready():
 
 func _init_fsm():
 	fsm_action=preload("fsm.gd").new()
+	
+	_init_fsm_states()
+	_init_fsm_move()
+	_init_fsm_attack()
+	
+	fsm_action.set_state("decide")
+	fsm_action.connect("state_changed",self,"_action_state_changed")
+
+func _init_fsm_states():
 	fsm_action.add_group("main",{move=false,attack=false,follow=false})
 	
 	fsm_action.add_state("decide",null,"main")
@@ -24,38 +33,39 @@ func _init_fsm():
 	fsm_action.add_state("move",{move=true},"main")
 	fsm_action.add_state("attack",{move=false,follow=true,attack=true})
 	fsm_action.add_state("sleep",{move=false,follow=false,attack=false})
+
+func _init_fsm_move():
+	fsm_action.add_link("wait","decide","timeout",[0.2])
+	fsm_action.add_link("move","decide","timeout",[2])
+	fsm_action.add_link("turn","decide","timeout",[1])
+	fsm_action.add_link("sleep","decide","timeout",[5])
+	fsm_action.add_link("decide","sleep","condition",[self,"fsm_has_no_target",true])
+	fsm_action.add_link("decide","move","condition",[self,"fsm_has_no_target",false])
 	
-	fsm_action.add_state_link("wait","decide","timeout",[0.2])
-	fsm_action.add_state_link("move","decide","timeout",[2])
-	fsm_action.add_state_link("turn","decide","timeout",[1])
-	fsm_action.add_state_link("sleep","decide","timeout",[5])
-	fsm_action.add_state_link("attack","decide","timeout",[10])
-	
-	fsm_action.add_state_link("attack","decide","condition",[self,"fsm_attack_finished",true])
-	fsm_action.add_state_link("main","attack","condition",[self,"fsm_can_attack",true])
-	fsm_action.add_state_link("decide","wait","condition",[self,"fsm_has_no_target",true])
-	fsm_action.add_state_link("decide","move","condition",[self,"fsm_has_no_target",false])
-	
-	fsm_action.set_state("decide")
-	
-	fsm_action.connect("state_changed",self,"_action_state_changed")
+
+func _init_fsm_attack():
+	fsm_action.add_link("attack","decide","timeout",[10])
+	fsm_action.add_link("attack","decide","condition",[self,"fsm_attack_finished",true])
+	fsm_action.add_link("main","attack","condition",[self,"fsm_can_attack",true])
+
 
 func _integrate_forces(state):
 	if not alive:
 		return
 	
-	can_see_target=current_target!=null and target_ray.is_colliding() and target_ray.get_collider()==current_target
+	can_see_target=get_target() and target_ray.is_colliding() and target_ray.get_collider()==get_target()
 	
 	._integrate_forces(state)
 
 func fsm_can_attack():
-	return current_target!=null and can_see_target and get_global_transform().origin.distance_to(current_target.get_global_transform().origin)<TARGET_DISTANCE
+	return get_target() and can_see_target and get_global_transform().origin.distance_to(get_target().get_global_transform().origin)<TARGET_DISTANCE
 
 func fsm_attack_finished():
 	return false
 
 func _action_state_changed(state_from,state_to,params):
-	print("state : ",state_to)
+	print("state: ",state_to)
+	print("params: ",params)
 	
 	if state_to=="move":
 		calculate_destination()
@@ -68,8 +78,7 @@ func _action_state_changed(state_from,state_to,params):
 	if state_to=="attack":
 		attack()
 	
-#	if state_from=="attack":
-#		calculate_destination()
+	emit_signal("action_changed",state_to)
 
 func hit():
 	die()
