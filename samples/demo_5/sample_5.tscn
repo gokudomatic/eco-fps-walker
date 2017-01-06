@@ -213,38 +213,11 @@ transform/local = Transform( 0.181889, 0, 0, 0, 0.181889, 0, 0, 0, 0.181889, 8.6
 
 [node name="npc" parent="." instance=ExtResource( 2 )]
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.30941, 10.5199, -2.71927 )
-input/ray_pickable = true
-input/capture_on_drag = false
-collision/layers = 1
-collision/mask = 1
-mode = 2
-mass = 1.0
-friction = 0.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = true
-continuous_cd = false
-contacts_reported = 8
-contact_monitor = true
-sleeping = false
-can_sleep = false
-axis_lock = 0
-velocity/linear = Vector3( 0, 0, 0 )
-velocity/angular = Vector3( 0, 0, 0 )
-damp_override/linear = -1.0
-damp_override/angular = -1.0
 script/script = ExtResource( 3 )
 body_radius = 0.4
-body_height = 1
 leg_length = 0.2
-sight_height = 2
 walk_speed = 6.0
-max_accel = 0.02
-air_accel = 0.05
-target = null
-navigation = null
 target_group = "prey"
 
 [node name="model" parent="npc" instance=ExtResource( 4 )]
