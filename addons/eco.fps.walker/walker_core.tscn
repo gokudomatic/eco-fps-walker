@@ -2,12 +2,12 @@
 
 [ext_resource path="res://addons/eco.fps.walker/walker_core.gd" type="Script" id=1]
 
-[sub_resource type="CapsuleShape" id=1]
+[sub_resource type="CapsuleShape" id=4]
 
 radius = 0.8
 height = 1.0
 
-[sub_resource type="SphereShape" id=4]
+[sub_resource type="SphereShape" id=5]
 
 radius = 0.3
 
@@ -17,10 +17,10 @@ _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 input/ray_pickable = true
 input/capture_on_drag = false
 shape_count = 2
-shapes/0/shape = SubResource( 1 )
+shapes/0/shape = SubResource( 4 )
 shapes/0/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.6, 0 )
 shapes/0/trigger = false
-shapes/1/shape = SubResource( 4 )
+shapes/1/shape = SubResource( 5 )
 shapes/1/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
 shapes/1/trigger = false
 collision/layers = 1
@@ -46,6 +46,10 @@ __meta__ = { "__editor_plugin_screen__":"Script" }
 body_radius = 0.8
 body_height = 1
 leg_length = 0.3
+sight_height = 2
+walk_speed = 3
+max_accel = 0.02
+air_accel = 0.05
 target = null
 navigation = null
 
@@ -53,7 +57,7 @@ navigation = null
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 transform/local = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.6, 0 )
-shape = SubResource( 1 )
+shape = SubResource( 4 )
 trigger = false
 _update_shape_index = 0
 
@@ -61,7 +65,7 @@ _update_shape_index = 0
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
-shape = SubResource( 4 )
+shape = SubResource( 5 )
 trigger = false
 _update_shape_index = 1
 
@@ -74,29 +78,10 @@ cast_to = Vector3( 0, -0.4, 0 )
 layer_mask = 1
 type_mask = 15
 
-[node name="TestCube" type="TestCube" parent="leg_ray"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.01, 0, 0, 0, 0.3, 0, 0, 0, 0.01, 0, 0, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = null
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
-
 [node name="target_ray" type="RayCast" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.89698, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 enabled = true
 cast_to = Vector3( 0, 0, -100 )
 layer_mask = 1
@@ -111,25 +96,6 @@ cast_to = Vector3( 1.2, -4, -2 )
 layer_mask = 1
 type_mask = 1
 
-[node name="TestCube1" type="TestCube" parent="ray_ground_right"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.00968092, 0.501193, 0, -0.00224291, 1.73294, -0.00446012, -0.00111769, 0.863562, 0.00895027, -0.549539, -1.81622, -0.904611 )
-layers = 1
-geometry/visible = true
-geometry/material_override = null
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
-
 [node name="ray_ground_left" type="RayCast" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
@@ -138,24 +104,5 @@ enabled = true
 cast_to = Vector3( -1.2, -4, -2 )
 layer_mask = 1
 type_mask = 1
-
-[node name="TestCube2" type="TestCube" parent="ray_ground_left"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.00564067, -0.515572, -0.00784458, -0.00224291, 1.73294, -0.00446012, 0.00794684, 0.855055, 0.00430927, 0.532622, -1.81622, -0.904611 )
-layers = 1
-geometry/visible = true
-geometry/material_override = null
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
 
 

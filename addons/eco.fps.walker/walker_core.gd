@@ -3,6 +3,12 @@ extends RigidBody
 export(float) var body_radius=0.8
 export(float) var body_height=1
 export(float) var leg_length=0.3
+export(float) var sight_height=2
+export(float) var walk_speed = 3;
+export(float) var max_accel = 0.02;
+export(float) var air_accel = 0.05;
+
+
 
 const UP=Vector3(0,1,0)
 export(NodePath) var target setget set_target
@@ -40,13 +46,6 @@ onready var ground_sensor_r=get_node("ray_ground_right")
 var old_sensor_status_l=false
 var old_sensor_status_r=false
 
-var aim_offset=Vector3(0,1.8,0)
-
-# original -----------
-const walk_speed = 3;
-const max_accel = 0.02;
-const air_accel = 0.05;
-
 # signals -----------------------------------
 signal walk_speed_changed(speed)
 signal action_changed(name)
@@ -65,10 +64,11 @@ func _init_collision_body():
 	b_shape.set_radius(body_radius)
 	b_shape.set_height(body_height)
 	get_node("leg").get_shape().set_radius(leg_length)
-#	get_node("leg").get_shape().set_extents(Vector3(0.01,leg_length,0.01))
 	get_node("leg").set_translation(Vector3(0,leg_length,0))
-	
 	get_node("body").set_translation(Vector3(0,0.5*body_height+body_radius+leg_length,0))
+	get_node("target_ray").set_translation(Vector3(0,sight_height,0))
+	get_node("ray_ground_right").set_translation(Vector3(0,sight_height,-0.5))
+	get_node("ray_ground_left").set_translation(Vector3(0,sight_height,-0.5))
 
 func _init_fsm():
 	fsm_action=preload("fsm.gd").new()
@@ -110,12 +110,6 @@ func _integrate_forces(state):
 	do_current_action(state)
 
 func do_current_action(state):
-	
-#	if OS.get_ticks_msec()>3200:
-#		print("left:",ground_sensor_l.is_enabled(),"    is colliding:",ground_sensor_l.is_colliding(),"/",check_ground_sensor(ground_sensor_l))
-#		print("ground:",leg_ray.is_colliding(),"   left:",check_ground_sensor(ground_sensor_l),"    right:",check_ground_sensor(ground_sensor_r))
-
-	
 	var current_t=get_global_transform()
 	var current_z=current_t.basis.z
 	
@@ -143,10 +137,9 @@ func do_current_action(state):
 	else:
 		# is falling
 		apply_impulse(Vector3(), Vector3() * air_accel * get_mass());
-#		apply_impulse(Vector3(), direction * air_accel * get_mass());
 	
 	# set rotation
-
+	
 	if leg_ray.is_colliding():
 		var target_z
 		if current_action.follow_target:
@@ -169,9 +162,6 @@ func do_current_action(state):
 			var gs_right=check_ground_sensor(ground_sensor_r)
 			var is_new_hole_l=gs_left and !old_sensor_status_l
 			var is_new_hole_r=gs_right and !old_sensor_status_r
-			
-			if is_new_hole_l:
-				print("new left:",is_new_hole_l)
 			
 			if gs_left and gs_right and not (is_new_hole_l and is_new_hole_r) and (is_new_hole_r or is_new_hole_l):
 				is_new_hole_r=true
@@ -210,7 +200,6 @@ func do_current_action(state):
 	var vel_speed=state.get_linear_velocity().length()/walk_speed;
 	var speed=state.get_angular_velocity().length()*0.1+vel_speed;
 	emit_signal("walk_speed_changed",speed)
-
 
 func calculate_destination(force_recalculate=false):
 	# reset ground sensors
