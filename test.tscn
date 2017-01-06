@@ -1,62 +1,9 @@
-[gd_scene load_steps=8 format=1]
+[gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://addons/eco.fps.walker/walker_core.tscn" type="PackedScene" id=1]
+[ext_resource path="res://samples/demo_2/map.scn" type="PackedScene" id=2]
 
-[sub_resource type="BoxShape" id=1]
-
-extents = Vector3( 10, 0.1, 10 )
-
-[sub_resource type="CapsuleShape" id=2]
-
-radius = 0.8
-height = 1.0
-
-[sub_resource type="BoxShape" id=3]
-
-extents = Vector3( 0.1, 0.3, 0.1 )
-
-[sub_resource type="GDScript" id=4]
-
-script/source = "extends RigidBody\n\nconst air_accel = 0.05;\n\nfunc _ready():\n\t# Called every time the node is added to the scene.\n\t# Initialization here\n\tpass\n\nfunc _integrate_forces(state):\n\t\n\tvar current_t=get_global_transform()\n\tvar current_z=current_t.basis.z\n\t\n\tvar aim = current_t.basis;\n\t\n\tvar direction = Vector3();\n\tdirection = direction.normalized();\n\t\n\tif get_node(\"RayCast\").is_colliding():\n\t\t# is walking on the ground\n\t\t# calculate the impulse vector for horizontal movement. Vertical velocity is kept but not amplified\n\t\tvar diff = Vector3() + direction * 3 - state.get_linear_velocity();\n\t\tvar vertdiff = aim[1] * diff.dot(aim[1]); # vertical velocity\n\t\tdiff -= vertdiff; # we remove vertical velocity temporarely for working only with horizontal velocity\n\t\tdiff = diff.normalized() * clamp(diff.length(), 0, 0.02 / state.get_step());\n\t\tdiff += vertdiff; # vertical velocity is put back\n\t\tapply_impulse(Vector3(), diff * get_mass())\n\telse:\n\t\tapply_impulse(Vector3(), direction * air_accel * get_mass());\n\t\n\tstate.integrate_forces();"
-
-[sub_resource type="FixedMaterial" id=5]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = true
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 0.0
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.0422974, 0.246094, 0, 1 )
-params/specular = Color( 0, 0, 0, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="FixedMaterial" id=6]
+[sub_resource type="FixedMaterial" id=1]
 
 flags/visible = true
 flags/double_sided = false
@@ -93,40 +40,103 @@ textures/glow_tc = 0
 textures/normal_tc = 0
 textures/shade_param_tc = 0
 
+[sub_resource type="Environment" id=2]
+
+ambient_light/enabled = true
+ambient_light/color = Color( 0.621094, 0.621094, 0.621094, 1 )
+ambient_light/energy = 1.0
+fxaa/enabled = false
+background/mode = 1
+background/color = Color( 0, 0, 0, 1 )
+background/energy = 1.0
+background/scale = 1.0
+background/glow = 0.0
+background/canvas_max_layer = null
+glow/enabled = false
+glow/blur_passes = 1
+glow/blur_scale = 1
+glow/blur_strength = 1
+glow/blur_blend_mode = null
+glow/bloom = 0.0
+glow/bloom_treshold = 0.5
+dof_blur/enabled = false
+dof_blur/blur_passes = 1
+dof_blur/begin = 100.0
+dof_blur/range = 10.0
+hdr/enabled = false
+hdr/tonemapper = 0
+hdr/exposure = 0.4
+hdr/white = 1.0
+hdr/glow_treshold = 0.95
+hdr/glow_scale = 0.2
+hdr/min_luminance = 0.4
+hdr/max_luminance = 8.0
+hdr/exposure_adj_speed = 0.5
+fog/enabled = false
+fog/begin = 100.0
+fog/begin_color = Color( 0, 0, 0, 1 )
+fog/end_color = Color( 0, 0, 0, 1 )
+fog/attenuation = 1.0
+fog/bg = true
+bcs/enabled = false
+bcs/brightness = 1.0
+bcs/contrast = 1.0
+bcs/saturation = 1.0
+srgb/enabled = false
+
+[sub_resource type="FixedMaterial" id=3]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 0.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 1, 0, 0, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
 [node name="Spatial" type="Spatial"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
-[node name="StaticBody" type="StaticBody" parent="."]
+[node name="npc" parent="." instance=ExtResource( 1 )]
+
+transform/local = Transform( 0.0882677, 0, -0.996096, 0, 1, 0, 0.996096, 0, 0.0882677, -4.77203, 1.90137, 5.05854 )
+target = NodePath("../target")
+
+[node name="TestCube" type="TestCube" parent="npc"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-input/ray_pickable = true
-input/capture_on_drag = false
-shape_count = 1
-shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
-shapes/0/trigger = false
-collision/layers = 3
-collision/mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
-
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 0
-
-[node name="Quad" type="Quad" parent="StaticBody"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 0.237504, 0, 0, 0, 0.237504, 0, 0, 0, 0.237504, 0, 0.445426, 0 )
 layers = 1
 geometry/visible = true
-geometry/material_override = null
+geometry/material_override = SubResource( 1 )
 geometry/cast_shadow = 1
 geometry/receive_shadows = true
 geometry/range_begin = 0.0
@@ -138,15 +148,11 @@ geometry/depth_scale = false
 geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
-quad/axis = 1
-quad/size = Vector2( 20, 20 )
-quad/offset = Vector2( 0, 0 )
-quad/centered = true
 
-[node name="Camera" type="Camera" parent="."]
+[node name="Camera" type="Camera" parent="npc"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.46129, 20.6576 )
+transform/local = Transform( -0.00363902, 0.330109, -0.943936, 0, 0.943942, 0.330111, 0.999994, 0.00120128, -0.00343504, -9.78872, 6.31704, -0.389808 )
 projection = 0
 fov = 60.0
 near = 0.1
@@ -158,113 +164,35 @@ environment = null
 h_offset = 0.0
 v_offset = 0.0
 
-[node name="RigidBody" type="RigidBody" parent="."]
+[node name="Camera1" type="Camera" parent="npc"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.10276, 0 )
-input/ray_pickable = true
-input/capture_on_drag = false
-shape_count = 2
-shapes/0/shape = SubResource( 2 )
-shapes/0/transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 1.6, 0 )
-shapes/0/trigger = false
-shapes/1/shape = SubResource( 3 )
-shapes/1/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
-shapes/1/trigger = false
-collision/layers = 1
-collision/mask = 1
-mode = 2
-mass = 1.0
-friction = 1.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = true
-continuous_cd = false
-contacts_reported = 0
-contact_monitor = true
-sleeping = false
-can_sleep = true
-axis_lock = 0
-velocity/linear = Vector3( 0, 0, 0 )
-velocity/angular = Vector3( 0, 0, 0 )
-damp_override/linear = -1.0
-damp_override/angular = -1.0
-script/script = SubResource( 4 )
+transform/local = Transform( -0.00363902, 0.330109, -0.943936, 0, 0.943942, 0.330111, 0.999994, 0.00120128, -0.00343504, -9.78872, 6.31704, -0.389808 )
+projection = 0
+fov = 60.0
+near = 0.1
+far = 100.0
+keep_aspect = 1
+current = false
+visible_layers = 1048575
+environment = null
+h_offset = 0.0
+v_offset = 0.0
 
-[node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 1.6, 0 )
-shape = SubResource( 2 )
-trigger = false
-_update_shape_index = 0
+environment = SubResource( 2 )
 
-[node name="TestCube" type="TestCube" parent="RigidBody/CollisionShape"]
+[node name="map" parent="." instance=ExtResource( 2 )]
+
+[node name="target" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.715723, 0, 0, 0, 0.715723, 0, 0, 0, 0.715723, 0, -2.34741e-09, 0.585592 )
+transform/local = Transform( 0.12918, 0, 0, 0, 0.12918, 0, 0, 0, 0.12918, 0, 11.8716, -77.5118 )
 layers = 1
 geometry/visible = true
-geometry/material_override = null
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
-
-[node name="CollisionShape1" type="CollisionShape" parent="RigidBody"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
-shape = SubResource( 3 )
-trigger = false
-_update_shape_index = 1
-
-[node name="RayCast" type="RayCast" parent="RigidBody"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
-enabled = true
-cast_to = Vector3( 0, -0.4, 0 )
-layer_mask = 1
-type_mask = 1
-
-[node name="TestCube" type="TestCube" parent="RigidBody/RayCast"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.02, 0, 0, 0, 0.15, 0, 0, 0, 0.02, 0, -0.15, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 5 )
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
-
-[node name="npc" parent="." instance=ExtResource( 1 )]
-
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.69925, 3.57251, -0.133162 )
-
-[node name="TestCube" type="TestCube" parent="npc"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.237504, 0, 0, 0, 0.237504, 0, 0, 0, 0.237504, 0, 0.445426, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 6 )
+geometry/material_override = SubResource( 3 )
 geometry/cast_shadow = 1
 geometry/receive_shadows = true
 geometry/range_begin = 0.0

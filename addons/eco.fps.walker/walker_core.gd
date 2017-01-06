@@ -52,7 +52,7 @@ signal walk_speed_changed(speed)
 signal action_changed(name)
 
 func _ready():
-#	_init_collision_body()
+	_init_collision_body()
 	
 	leg_ray.add_exception_rid(get_rid())
 	target_ray.add_exception_rid(get_rid())
@@ -64,7 +64,8 @@ func _init_collision_body():
 	var b_shape=get_node("body").get_shape()
 	b_shape.set_radius(body_radius)
 	b_shape.set_height(body_height)
-	get_node("leg").get_shape().set_length(leg_length)
+	get_node("leg").get_shape().set_radius(leg_length)
+#	get_node("leg").get_shape().set_extents(Vector3(0.01,leg_length,0.01))
 	get_node("leg").set_translation(Vector3(0,leg_length,0))
 	
 	get_node("body").set_translation(Vector3(0,0.5*body_height+body_radius+leg_length,0))
@@ -109,6 +110,12 @@ func _integrate_forces(state):
 	do_current_action(state)
 
 func do_current_action(state):
+	
+#	if OS.get_ticks_msec()>3200:
+#		print("left:",ground_sensor_l.is_enabled(),"    is colliding:",ground_sensor_l.is_colliding(),"/",check_ground_sensor(ground_sensor_l))
+#		print("ground:",leg_ray.is_colliding(),"   left:",check_ground_sensor(ground_sensor_l),"    right:",check_ground_sensor(ground_sensor_r))
+
+	
 	var current_t=get_global_transform()
 	var current_z=current_t.basis.z
 	
@@ -135,7 +142,8 @@ func do_current_action(state):
 			apply_impulse(Vector3(), diff * get_mass())
 	else:
 		# is falling
-		apply_impulse(Vector3(), direction * air_accel * get_mass());
+		apply_impulse(Vector3(), Vector3() * air_accel * get_mass());
+#		apply_impulse(Vector3(), direction * air_accel * get_mass());
 	
 	# set rotation
 
@@ -161,6 +169,9 @@ func do_current_action(state):
 			var gs_right=check_ground_sensor(ground_sensor_r)
 			var is_new_hole_l=gs_left and !old_sensor_status_l
 			var is_new_hole_r=gs_right and !old_sensor_status_r
+			
+			if is_new_hole_l:
+				print("new left:",is_new_hole_l)
 			
 			if gs_left and gs_right and not (is_new_hole_l and is_new_hole_r) and (is_new_hole_r or is_new_hole_l):
 				is_new_hole_r=true
@@ -200,7 +211,13 @@ func do_current_action(state):
 	var speed=state.get_angular_velocity().length()*0.1+vel_speed;
 	emit_signal("walk_speed_changed",speed)
 
+
 func calculate_destination(force_recalculate=false):
+	# reset ground sensors
+	if not (old_sensor_status_r and old_sensor_status_l):
+		old_sensor_status_r=false
+		old_sensor_status_l=false
+	
 	var offset=Vector3(0,0,0)
 	if get_target():
 		offset=get_target_offset(get_target())
