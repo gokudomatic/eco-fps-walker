@@ -64,8 +64,6 @@ func fsm_attack_finished():
 	return false
 
 func _action_state_changed(state_from,state_to,params):
-	print("state: ",state_to)
-	print("params: ",params)
 	
 	if state_to=="move":
 		calculate_destination()

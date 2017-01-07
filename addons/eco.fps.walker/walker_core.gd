@@ -8,7 +8,9 @@ export(float) var walk_speed = 3;
 export(float) var max_accel = 0.02;
 export(float) var air_accel = 0.05;
 
-
+export(bool) var debug_mode=false
+export(NodePath) var debug_path
+export(NodePath) var debug_wpt
 
 const UP=Vector3(0,1,0)
 export(NodePath) var target setget set_target
@@ -190,7 +192,7 @@ func do_current_action(state):
 				current_waypoint=get_global_transform().origin-dir
 		 
 		# if not aiming at target, turn at constant speed
-		if not (abs(vx)<0.3):
+		if not (abs(vx)<0.5):
 			vx=sign(vx)
 		
 		state.set_angular_velocity(Vector3(0,vx*ANGULAR_SPEED,0))
@@ -203,7 +205,7 @@ func do_current_action(state):
 
 func calculate_destination(force_recalculate=false):
 	# reset ground sensors
-	if not (old_sensor_status_r and old_sensor_status_l):
+	if navmesh==null and not (old_sensor_status_r and old_sensor_status_l):
 		old_sensor_status_r=false
 		old_sensor_status_l=false
 	
@@ -232,11 +234,18 @@ func calculate_destination(force_recalculate=false):
 	current_direction=get_global_transform().looking_at(current_waypoint+offset,Vector3(0,1,0)).orthonormalized().basis.z
 	if (current_direction+old_direction).length()<1.2:
 		fsm_action.set_state("turn")
+	
+	if debug_mode and debug_wpt!=null:
+		var n=get_node(debug_wpt)
+		var ttt=Transform(Vector3(0.1,0,0),Vector3(0,0.1,0),Vector3(0,0,0.1),current_waypoint)
+		
+		n.set_global_transform(ttt)
 
 func get_waypoint_no_target():
 	return get_global_transform().origin
 
 func _update_waypoint(reached_wpt):
+	
 	var current_t=get_global_transform()
 	var cur_dir=current_t.basis.z
 	
@@ -307,6 +316,18 @@ func _update_waypoint(reached_wpt):
 		else:
 			was_UTurn=false
 	
+	if debug_mode and debug_path!=null:
+		var im_node=get_node(debug_path)
+		im_node.clear()
+		im_node.begin(Mesh.PRIMITIVE_POINTS,null)
+		im_node.add_vertex(begin)
+		im_node.add_vertex(end)
+		im_node.end()
+		im_node.begin(Mesh.PRIMITIVE_LINE_STRIP,null)
+		for x in current_path:
+			im_node.add_vertex(x)
+		im_node.end()
+		
 	
 	waypoint_timeout=WAYPOINT_MAX_TIMEOUT
 	# reset ground sensors

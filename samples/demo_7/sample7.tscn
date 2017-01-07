@@ -1,12 +1,13 @@
 [gd_scene load_steps=8 format=1]
 
 [ext_resource path="res://addons/eco.fps.walker/walker_core.tscn" type="PackedScene" id=1]
-[ext_resource path="res://samples/demo_2/map.scn" type="PackedScene" id=2]
+[ext_resource path="res://samples/commons/man/human_walk_0.scn" type="PackedScene" id=2]
+[ext_resource path="res://samples/commons/tileset/tileset.tres" type="MeshLibrary" id=3]
 
 [sub_resource type="Environment" id=1]
 
 ambient_light/enabled = true
-ambient_light/color = Color( 1, 1, 1, 1 )
+ambient_light/color = Color( 0.914062, 0.914062, 0.914062, 1 )
 ambient_light/energy = 1.0
 fxaa/enabled = false
 background/mode = 1
@@ -64,7 +65,7 @@ fixed_flags/use_color_array = false
 fixed_flags/use_point_size = false
 fixed_flags/discard_alpha = false
 fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.03125, 0, 1, 1 )
+params/diffuse = Color( 0, 0.273438, 1, 1 )
 params/specular = Color( 0, 0, 0, 1 )
 params/emission = Color( 0, 0, 0, 1 )
 params/specular_exp = 40
@@ -95,13 +96,13 @@ flags/lightmap_on_uv2 = true
 flags/colarray_is_srgb = true
 params/blend_mode = 0
 params/depth_draw = 1
-params/line_width = 1.875
+params/line_width = 0.0
 fixed_flags/use_alpha = false
 fixed_flags/use_color_array = false
 fixed_flags/use_point_size = false
 fixed_flags/discard_alpha = false
 fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 1, 0.00390625, 0.00390625, 1 )
+params/diffuse = Color( 1, 0.820312, 0, 1 )
 params/specular = Color( 0, 0, 0, 1 )
 params/emission = Color( 0, 0, 0, 1 )
 params/specular_exp = 40
@@ -126,19 +127,19 @@ textures/shade_param_tc = 0
 flags/visible = true
 flags/double_sided = false
 flags/invert_faces = false
-flags/unshaded = false
+flags/unshaded = true
 flags/on_top = false
 flags/lightmap_on_uv2 = true
 flags/colarray_is_srgb = true
 params/blend_mode = 0
 params/depth_draw = 1
-params/line_width = 0.0
+params/line_width = 1.0
 fixed_flags/use_alpha = false
 fixed_flags/use_color_array = false
 fixed_flags/use_point_size = false
 fixed_flags/discard_alpha = false
 fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.546875, 0.53077, 0.134583, 1 )
+params/diffuse = Color( 1, 1, 1, 1 )
 params/specular = Color( 0, 0, 0, 1 )
 params/emission = Color( 0, 0, 0, 1 )
 params/specular_exp = 40
@@ -158,44 +159,7 @@ textures/glow_tc = 0
 textures/normal_tc = 0
 textures/shade_param_tc = 0
 
-[sub_resource type="FixedMaterial" id=5]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 0.0
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.0545194, 0.261719, 0.0184021, 1 )
-params/specular = Color( 0, 0, 0, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[node name="Spatial" type="Spatial"]
+[node name="world" type="Spatial"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
@@ -206,19 +170,21 @@ environment = SubResource( 1 )
 
 [node name="npc" parent="." instance=ExtResource( 1 )]
 
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12694, 3.76658, 8.85242 )
-collision/mask = 2
-walk_speed = 4.0
-debug_mode = false
-debug_path = null
-debug_wpt = null
+transform/local = Transform( -0.0580618, 0, 0.998313, 0, 1, 0, -0.998313, 0, -0.0580618, 28.3643, 28.0137, -45.4881 )
+body_radius = 0.4
+walk_speed = 2.0
+debug_mode = true
+debug_path = NodePath("../im")
+debug_wpt = NodePath("../wpt")
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
+
+[node name="model" parent="npc" instance=ExtResource( 2 )]
 
 [node name="Camera" type="Camera" parent="npc"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 0.908574, 0.417724, 0, -0.417724, 0.908574, 0, 8.32907, 8.47772 )
+transform/local = Transform( 1, 0, 0, 0, 0.887853, 0.460128, 0, -0.460128, 0.887853, 0, 5.99762, 5.05145 )
 projection = 0
 fov = 60.0
 near = 0.1
@@ -230,10 +196,10 @@ environment = null
 h_offset = 0.0
 v_offset = 0.0
 
-[node name="TestCube" type="TestCube" parent="npc"]
+[node name="target" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.455835, 0, 0, 0, 0.455835, 0, 0, 0, 0.455835, 0, 0.778903, 0 )
+transform/local = Transform( 0.276706, 0, 0, 0, 0.276706, 0, 0, 0, 0.276706, -31.4777, 34.0002, 26.9416 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 2 )
@@ -249,10 +215,10 @@ geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
 
-[node name="target" type="TestCube" parent="."]
+[node name="wpt" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 12.4864, 23.2817, -159.6 )
+transform/local = Transform( 0.133751, 0, 0, 0, 0.133751, 0, 0, 0, 0.133751, 17.3796, 34.0002, 26.9416 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 3 )
@@ -273,25 +239,24 @@ geometry/baked_light_tex_id = 0
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 up_vector = Vector3( 0, 1, 0 )
 
-[node name="map" parent="Navigation" instance=ExtResource( 2 )]
-
-transform/local = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
-
-[node name="npc 2" parent="." instance=ExtResource( 1 )]
-
-transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, 10.6866, 0.379697, 10.1786 )
-collision/mask = 2
-walk_speed = 8.0
-debug_mode = false
-debug_path = null
-debug_wpt = null
-target = NodePath("../target")
-navigation = NodePath("../Navigation")
-
-[node name="TestCube1" type="TestCube" parent="npc 2"]
+[node name="GridMap" type="GridMap" parent="Navigation"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.455835, 0, 1.86265e-09, 0, 0.455835, 0, -1.86265e-09, 0, 0.455835, 0, 0.77, 0 )
+theme/theme = ExtResource( 3 )
+theme/bake = false
+lighting/bake = false
+cell/size = 2.0
+cell/octant_size = 4
+cell/center_x = true
+cell/center_y = true
+cell/center_z = true
+cell/scale = 1.0
+data = { "cells":IntArray( 1, 1, 1441801, 65533, 1, 1441801, 65535, 1, 1441801, 1, 3, 1441801, 65533, 3, 1441801, 65535, 3, 1441801, 65535, 5, 1441801, 65535, 7, 1441801, 65535, 9, 1441801, 65535, 11, 1441801, 393201, 11, 9, 393203, 11, 9, 524277, 11, 655363, 589815, 11, 655363, 655353, 11, 655363, 655361, 11, 9, 720891, 11, 655363, 720895, 11, 655369, 786429, 11, 655363, 1048559, 11, 9, 1048561, 11, 9, 1048563, 11, 9, 65535, 13, 9, 196605, 13, 3, 262139, 13, 3, 327673, 13, 3, 393201, 13, 9, 393203, 13, 9, 393207, 13, 3, 458741, 13, 3, 655361, 13, 9, 720895, 13, 655369, 851965, 13, 3, 917499, 13, 3, 983033, 13, 3, 1048559, 13, 9, 1048561, 13, 9, 1048563, 13, 9, 1048567, 13, 3, 1114101, 13, 3, 1048559, 15, 9, 1048561, 15, 9, 1048563, 15, 9, 1, 65509, 9, 3, 65509, 9, 5, 65509, 9, 7, 65509, 9, 9, 65509, 9, 11, 65509, 9, 13, 65509, 9, 15, 65509, 9, 17, 65509, 9, 19, 65509, 9, 21, 65509, 9, 65533, 65509, 9, 65535, 65509, 9, 262157, 65509, 1441801, 393227, 65509, 3, 458761, 65509, 3, 524291, 65509, 9, 524295, 65509, 3, 589829, 65509, 3, 21, 65511, 9, 65533, 65511, 9, 327693, 65511, 1441795, 524291, 65511, 9, 1, 65513, 9, 3, 65513, 9, 5, 65513, 9, 7, 65513, 9, 9, 65513, 9, 11, 65513, 9, 13, 65513, 9, 15, 65513, 9, 17, 65513, 9, 21, 65513, 9, 65533, 65513, 9, 262157, 65513, 1441795, 524291, 65513, 9, 655365, 65513, 655363, 720903, 65513, 655363, 786441, 65513, 655363, 786445, 65513, 655369, 851979, 65513, 655363, 1, 65515, 9, 17, 65515, 9, 21, 65515, 9, 65533, 65515, 9, 196621, 65515, 1441795, 1, 65517, 9, 5, 65517, 9, 7, 65517, 9, 9, 65517, 9, 17, 65517, 9, 21, 65517, 9, 65533, 65517, 9, 131085, 65517, 1441795, 1, 65519, 9, 5, 65519, 9, 9, 65519, 9, 11, 65519, 9, 13, 65519, 9, 17, 65519, 9, 21, 65519, 9, 65533, 65519, 9, 1, 65521, 9, 5, 65521, 9, 17, 65521, 9, 21, 65521, 9, 65533, 65521, 9, 1, 65523, 9, 5, 65523, 9, 7, 65523, 9, 9, 65523, 9, 11, 65523, 9, 13, 65523, 9, 15, 65523, 9, 17, 65523, 9, 21, 65523, 9, 65533, 65523, 9, 1, 65525, 9, 21, 65525, 9, 65533, 65525, 9, 1, 65527, 9, 3, 65527, 9, 5, 65527, 9, 7, 65527, 9, 9, 65527, 9, 11, 65527, 9, 13, 65527, 9, 15, 65527, 9, 17, 65527, 9, 21, 65527, 9, 65533, 65527, 9, 17, 65529, 9, 21, 65529, 9, 65533, 65529, 9, 1, 65531, 9, 3, 65531, 9, 5, 65531, 9, 7, 65531, 9, 9, 65531, 9, 11, 65531, 9, 13, 65531, 9, 15, 65531, 9, 17, 65531, 9, 21, 65531, 9, 65533, 65531, 9, 65535, 65531, 9, 21, 65533, 9, 1, 65535, 1441801, 3, 65535, 9, 5, 65535, 9, 7, 65535, 9, 9, 65535, 9, 11, 65535, 9, 13, 65535, 9, 15, 65535, 9, 17, 65535, 9, 19, 65535, 9, 21, 65535, 9, 65533, 65535, 1441801, 65535, 65535, 1441801 ) }
+__meta__ = { "_editor_clip_":0, "_editor_floor_":Vector3( 0, 12, 0 ) }
+
+[node name="im" type="ImmediateGeometry" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 4 )
@@ -307,33 +272,8 @@ geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
 
-[node name="npc3" parent="." instance=ExtResource( 1 )]
+[connection signal="action_changed" from="npc" to="npc/model" method="_on_npc_action_changed"]
 
-transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, -10.3337, 11.6214, -11.1812 )
-collision/mask = 2
-debug_mode = false
-debug_path = null
-debug_wpt = null
-target = NodePath("../target")
-navigation = NodePath("../Navigation")
-
-[node name="TestCube1" type="TestCube" parent="npc3"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.455835, 0, 1.86265e-09, 0, 0.455835, 0, -1.86265e-09, 0, 0.455835, 0, 0.77, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 5 )
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
+[connection signal="walk_speed_changed" from="npc" to="npc/model" method="_on_npc_walk_speed_changed"]
 
 

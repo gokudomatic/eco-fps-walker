@@ -210,6 +210,10 @@ environment = SubResource( 1 )
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.16511, 0.623021, 5.53124 )
 collision/mask = 2
+walk_speed = 5.0
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube" type="TestCube" parent="npc"]
@@ -235,6 +239,9 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.150784, 4.97174, -10.4982 )
 collision/mask = 2
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube" type="TestCube" parent="npc1"]
@@ -279,6 +286,9 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.90681, 0.228985, 5.25886 )
 collision/mask = 2
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube1" type="TestCube" parent="npc 2"]
@@ -304,6 +314,9 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.93404, 4.28915, -42.2446 )
 collision/mask = 2
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube1" type="TestCube" parent="npc4"]
@@ -330,6 +343,9 @@ geometry/baked_light_tex_id = 0
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.85608, 1.69322, 5.02646 )
 collision/mask = 2
 walk_speed = 6.0
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube1" type="TestCube" parent="npc3"]
@@ -355,6 +371,9 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.08853, 4.09617, -43.7195 )
 collision/mask = 2
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube1" type="TestCube" parent="npc5"]

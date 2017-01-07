@@ -218,6 +218,9 @@ script/script = ExtResource( 3 )
 body_radius = 0.4
 leg_length = 0.2
 walk_speed = 6.0
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target_group = "prey"
 
 [node name="model" parent="npc" instance=ExtResource( 4 )]
