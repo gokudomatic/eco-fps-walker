@@ -2,12 +2,12 @@
 
 [ext_resource path="res://addons/eco.fps.walker/walker_core.gd" type="Script" id=1]
 
-[sub_resource type="CapsuleShape" id=4]
+[sub_resource type="CapsuleShape" id=1]
 
 radius = 0.8
 height = 1.0
 
-[sub_resource type="SphereShape" id=5]
+[sub_resource type="SphereShape" id=2]
 
 radius = 0.3
 
@@ -17,10 +17,10 @@ _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 input/ray_pickable = true
 input/capture_on_drag = false
 shape_count = 2
-shapes/0/shape = SubResource( 4 )
+shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.6, 0 )
 shapes/0/trigger = false
-shapes/1/shape = SubResource( 5 )
+shapes/1/shape = SubResource( 2 )
 shapes/1/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
 shapes/1/trigger = false
 collision/layers = 1
@@ -50,6 +50,9 @@ sight_height = 2
 walk_speed = 3
 max_accel = 0.02
 air_accel = 0.05
+debug_mode = false
+debug_path = null
+debug_wpt = null
 target = null
 navigation = null
 
@@ -57,7 +60,7 @@ navigation = null
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 transform/local = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.6, 0 )
-shape = SubResource( 4 )
+shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
 
@@ -65,7 +68,7 @@ _update_shape_index = 0
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 1
 

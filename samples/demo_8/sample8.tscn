@@ -1,56 +1,17 @@
 [gd_scene load_steps=11 format=1]
 
-[ext_resource path="res://addons/eco.fps.walker/basic_bot.tscn" type="PackedScene" id=1]
+[ext_resource path="res://samples/commons/tileset/tileset.tres" type="MeshLibrary" id=1]
+[ext_resource path="res://addons/eco.fps.walker/basic_guard.tscn" type="PackedScene" id=2]
+[ext_resource path="res://samples/commons/man/human_walk_0.scn" type="PackedScene" id=3]
 
-[sub_resource type="PlaneShape" id=1]
-
-plane = Plane( 0, 1, 0, 0 )
-
-[sub_resource type="FixedMaterial" id=2]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 0.0
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0.289062, 0.18242, 0.111786, 1 )
-params/specular = Color( 0, 0, 0, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="Environment" id=3]
+[sub_resource type="Environment" id=1]
 
 ambient_light/enabled = true
 ambient_light/color = Color( 0.914062, 0.914062, 0.914062, 1 )
 ambient_light/energy = 1.0
 fxaa/enabled = false
-background/mode = 2
-background/color = Color( 0.00418091, 0.0871458, 0.535156, 1 )
+background/mode = 1
+background/color = Color( 0, 0, 0, 1 )
 background/energy = 1.0
 background/scale = 1.0
 background/glow = 0.0
@@ -87,93 +48,7 @@ bcs/contrast = 1.0
 bcs/saturation = 1.0
 srgb/enabled = false
 
-[sub_resource type="GDScript" id=4]
-
-script/source = "extends \"res://addons/eco.fps.walker/basic_bot.gd\"\n\nfunc attack():\n\tif get_target():\n\t\tget_target().hit()"
-
-[sub_resource type="FixedMaterial" id=5]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 4.48416e-44
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="FixedMaterial" id=6]
-
-flags/visible = true
-flags/double_sided = false
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 1.96182e-44
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 0, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
-
-[sub_resource type="BoxShape" id=7]
-
-extents = Vector3( 0.154226, 0.150872, 0.157452 )
-
-[sub_resource type="GDScript" id=8]
-
-script/source = "extends StaticBody\n\nfunc hit():\n\tqueue_free()"
-
-[sub_resource type="FixedMaterial" id=9]
+[sub_resource type="FixedMaterial" id=2]
 
 flags/visible = true
 flags/double_sided = false
@@ -190,8 +65,94 @@ fixed_flags/use_color_array = false
 fixed_flags/use_point_size = false
 fixed_flags/discard_alpha = false
 fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 1, 0, 0, 1 )
-params/specular = Color( 1, 1, 1, 1 )
+params/diffuse = Color( 1, 0.820312, 0, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="FixedMaterial" id=3]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = true
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 1.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 1, 1, 1, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="GDScript" id=4]
+
+script/source = "extends \"res://addons/eco.fps.walker/basic_guard.gd\"\n\nconst tour=[Vector3(3,4,-1.5),Vector3(-25,4,-1.5),Vector3(-25,4,27),Vector3(3,4,27)]\n\nvar attack_is_finished=false\nvar tour_id=0\n\nfunc _init_fsm_move():\n\tfsm_action.add_link(\"wait\",\"decide\",\"timeout\",[0.2])\n\tfsm_action.add_link(\"move\",\"decide\",\"timeout\",[2])\n\tfsm_action.add_link(\"turn\",\"decide\",\"timeout\",[1])\n\tfsm_action.add_link(\"sleep\",\"decide\",\"timeout\",[3])\n\tfsm_action.add_link(\"decide\",\"move\",\"timeout\",[0.1])\n\tfsm_action.add_link(\"scan\",\"decide\",\"condition\",[self,\"fsm_has_no_target\",false])\n\tfsm_action.add_link(\"scan\",\"sleep\",\"timeout\",[1])\n\nfunc get_waypoint_no_target():\n\tvar tour_point=tour[tour_id]\n\tif tour_point.distance_to(get_global_transform().origin)<WAYPOINT_ERROR_DELTA:\n\t\ttour_id=(tour_id+1) % tour.size()\n\t\ttour_point=tour[tour_id]\n\treturn tour_point\n\nfunc _on_model_attack_ended():\n\tattack_is_finished=true\n\nfunc fsm_attack_finished():\n\tif attack_is_finished:\n\t\tattack_is_finished=false\n\t\treturn true\n\telse:\n\t\treturn false\n\nfunc _on_model_attack_hit():\n\tget_target().hit()\n"
+
+[sub_resource type="BoxShape" id=5]
+
+extents = Vector3( 0.257778, 0.275895, 0.271033 )
+
+[sub_resource type="GDScript" id=6]
+
+script/source = "extends StaticBody\n\nfunc hit():\n\tqueue_free()"
+
+[sub_resource type="FixedMaterial" id=7]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 0.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 0, 0.273438, 1, 1 )
+params/specular = Color( 0, 0, 0, 1 )
 params/emission = Color( 0, 0, 0, 1 )
 params/specular_exp = 40
 params/detail_mix = 1.0
@@ -214,33 +175,15 @@ textures/shade_param_tc = 0
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
-[node name="StaticBody" type="StaticBody" parent="."]
-
-editor/display_folded = true
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-input/ray_pickable = true
-input/capture_on_drag = false
-shape_count = 1
-shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shapes/0/trigger = false
-collision/layers = 1
-collision/mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
-
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 0
+environment = SubResource( 1 )
 
-[node name="Quad" type="Quad" parent="StaticBody"]
+[node name="wpt" type="TestCube" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 0.133751, 0, 0, 0, 0.133751, 0, 0, 0, 0.133751, 17.3796, 34.0002, 26.9416 )
 layers = 1
 geometry/visible = true
 geometry/material_override = SubResource( 2 )
@@ -255,20 +198,62 @@ geometry/depth_scale = false
 geometry/visible_in_all_rooms = false
 geometry/use_baked_light = false
 geometry/baked_light_tex_id = 0
-quad/axis = 1
-quad/size = Vector2( 100, 100 )
-quad/offset = Vector2( 0, 0 )
-quad/centered = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="Navigation" type="Navigation" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-environment = SubResource( 3 )
+up_vector = Vector3( 0, 1, 0 )
 
-[node name="Camera" type="Camera" parent="."]
+[node name="GridMap" type="GridMap" parent="Navigation"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 0.844581, 0.535428, 0, -0.535428, 0.844581, 0, 6.94647, 11.2051 )
+theme/theme = ExtResource( 1 )
+theme/bake = false
+lighting/bake = false
+cell/size = 2.0
+cell/octant_size = 4
+cell/center_x = true
+cell/center_y = true
+cell/center_z = true
+cell/scale = 1.0
+data = { "cells":IntArray( 1, 1, 1441801, 65523, 1, 9, 65533, 1, 1441801, 65535, 1, 1441801, 1, 3, 1441801, 65523, 3, 9, 65533, 3, 1441801, 65535, 3, 1441801, 1, 5, 9, 65523, 5, 9, 1, 7, 9, 65523, 7, 9, 1, 9, 9, 65523, 9, 9, 1, 11, 9, 65523, 11, 9, 1, 13, 9, 65523, 13, 9, 65525, 13, 9, 65527, 13, 9, 65529, 13, 9, 65531, 13, 9, 65533, 13, 9, 65535, 13, 9, 65529, 15, 9, 1, 65535, 1441801, 65523, 65535, 9, 65525, 65535, 9, 65527, 65535, 9, 65529, 65535, 9, 65531, 65535, 9, 65533, 65535, 1441801, 65535, 65535, 1441801 ) }
+__meta__ = { "_editor_clip_":0, "_editor_floor_":Vector3( 0, 0, 0 ) }
+
+[node name="im" type="ImmediateGeometry" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+layers = 1
+geometry/visible = true
+geometry/material_override = SubResource( 3 )
+geometry/cast_shadow = 1
+geometry/receive_shadows = true
+geometry/range_begin = 0.0
+geometry/range_end = 0.0
+geometry/extra_cull_margin = 0.0
+geometry/billboard = false
+geometry/billboard_y = false
+geometry/depth_scale = false
+geometry/visible_in_all_rooms = false
+geometry/use_baked_light = false
+geometry/baked_light_tex_id = 0
+
+[node name="npc" parent="." instance=ExtResource( 2 )]
+
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.8774, 3.62539, 5.34797 )
+script/script = SubResource( 4 )
+debug_mode = true
+debug_path = NodePath("../im")
+debug_wpt = NodePath("../wpt")
+navigation = NodePath("../Navigation")
+target_group = "prey"
+vision_range = 17
+
+[node name="model" parent="npc" instance=ExtResource( 3 )]
+
+[node name="Camera" type="Camera" parent="npc"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 0.887853, 0.460128, 0, -0.460128, 0.887853, 0, 5.99762, 5.05145 )
 projection = 0
 fov = 60.0
 near = 0.1
@@ -280,58 +265,19 @@ environment = null
 h_offset = 0.0
 v_offset = 0.0
 
-[node name="npc" parent="." groups=[ "enemy" ] instance=ExtResource( 1 )]
-
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.1525, 0 )
-script/script = SubResource( 4 )
-target = NodePath("../target")
-
-[node name="TestCube" type="TestCube" parent="npc"]
+[node name="Spatial" type="Spatial" parent="."]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.237504, 0, 0, 0, 0.237504, 0, 0, 0, 0.237504, 0, 0.445426, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 5 )
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 4, 27 )
 
-[node name="TestCube1" type="TestCube" parent="npc"]
+[node name="target" type="StaticBody" parent="." groups=[ "prey" ]]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.039546, 0, 0, 0, 0.039546, 0, 0, 0, 1, 0, 0.445426, -1.21137 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 6 )
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
-
-[node name="target" type="StaticBody" parent="."]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.63805, 0.404185, 4.10243 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3775, 3.80412, 31.5296 )
 input/ray_pickable = true
 input/capture_on_drag = false
 shape_count = 1
-shapes/0/shape = SubResource( 7 )
+shapes/0/shape = SubResource( 5 )
 shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 shapes/0/trigger = false
 collision/layers = 1
@@ -340,15 +286,15 @@ friction = 1.0
 bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
-script/script = SubResource( 8 )
+script/script = SubResource( 6 )
 
 [node name="target1" type="TestCube" parent="target"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0 )
+transform/local = Transform( 0.276706, 0, 0, 0, 0.276706, 0, 0, 0, 0.276706, 0, 0, 0 )
 layers = 1
 geometry/visible = true
-geometry/material_override = SubResource( 9 )
+geometry/material_override = SubResource( 7 )
 geometry/cast_shadow = 1
 geometry/receive_shadows = true
 geometry/range_begin = 0.0
@@ -364,8 +310,16 @@ geometry/baked_light_tex_id = 0
 [node name="CollisionShape" type="CollisionShape" parent="target"]
 
 _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shape = SubResource( 7 )
+shape = SubResource( 5 )
 trigger = false
 _update_shape_index = 0
+
+[connection signal="action_changed" from="npc" to="npc/model" method="_on_npc_action_changed"]
+
+[connection signal="walk_speed_changed" from="npc" to="npc/model" method="_on_npc_walk_speed_changed"]
+
+[connection signal="attack_ended" from="npc/model" to="npc" method="_on_model_attack_ended"]
+
+[connection signal="attack_hit" from="npc/model" to="npc" method="_on_model_attack_hit"]
 
 

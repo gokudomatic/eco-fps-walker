@@ -2,22 +2,23 @@ extends "basic_bot.gd"
 
 export(String) var target_group
 export(float) var vision_angle=0.53
+export(int) var vision_range=0
 
-const action_states=["sleep","move","turn","wait","attack","patrol"]
+const action_states=["sleep","move","turn","wait","attack","scan"]
 
 func _init_fsm_states():
 	._init_fsm_states()
-	fsm_action.add_state("patrol",{move=false,follow=false,attack=false})
+	fsm_action.add_state("scan",{move=false,follow=false,attack=false})
 
 func _init_fsm_move():
 	fsm_action.add_link("wait","decide","timeout",[0.2])
 	fsm_action.add_link("move","decide","timeout",[2])
 	fsm_action.add_link("turn","decide","timeout",[1])
 	fsm_action.add_link("sleep","decide","timeout",[3])
-	fsm_action.add_link("decide","patrol","condition",[self,"fsm_has_no_target",true])
+	fsm_action.add_link("decide","scan","condition",[self,"fsm_has_no_target",true])
 	fsm_action.add_link("decide","move","condition",[self,"fsm_has_no_target",false])
-	fsm_action.add_link("patrol","decide","condition",[self,"fsm_has_no_target",false])
-	fsm_action.add_link("patrol","sleep","timeout",[1])
+	fsm_action.add_link("scan","decide","condition",[self,"fsm_has_no_target",false])
+	fsm_action.add_link("scan","sleep","timeout",[1])
 
 func do_current_action(state):
 	if not get_target():
@@ -26,7 +27,7 @@ func do_current_action(state):
 	.do_current_action(state)
 
 func _action_state_changed(state_from,state_to,params):
-	if state_to=="patrol":
+	if state_to=="scan":
 		calculate_destination()
 		
 	._action_state_changed(state_from,state_to,params)
@@ -50,6 +51,11 @@ func scan_for_target():
 	var trans=get_global_transform()
 	for candidate in get_tree().get_nodes_in_group(target_group):
 		var candidate_dist=trans.origin.distance_to(candidate.get_global_transform().origin)
+		
+		# skip if candidate is too far
+		if vision_range>0 and candidate_dist>vision_range:
+			continue
+		
 		# check if target is closer than actual one
 		if target_dist!=null and candidate_dist>=target_dist:
 			continue # if not, skip it
@@ -59,3 +65,6 @@ func scan_for_target():
 		if (target_trans.basis.z-trans.basis.z).length()<vision_angle:
 			set_target(candidate)
 			target_dist=candidate_dist
+	
+	if target_dist!=null:
+		calculate_destination(true)

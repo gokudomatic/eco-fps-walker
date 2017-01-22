@@ -209,9 +209,6 @@ environment = SubResource( 1 )
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12694, 3.76658, 8.85242 )
 collision/mask = 2
 walk_speed = 4.0
-debug_mode = false
-debug_path = null
-debug_wpt = null
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
 
@@ -282,9 +279,6 @@ transform/local = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, 10.6866, 0.379697, 10.1786 )
 collision/mask = 2
 walk_speed = 8.0
-debug_mode = false
-debug_path = null
-debug_wpt = null
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
 
@@ -311,9 +305,6 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, -10.3337, 11.6214, -11.1812 )
 collision/mask = 2
-debug_mode = false
-debug_path = null
-debug_wpt = null
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
 

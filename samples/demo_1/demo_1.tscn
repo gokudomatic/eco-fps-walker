@@ -205,9 +205,6 @@ _import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 [node name="npc" parent="." instance=ExtResource( 1 )]
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.27983, 0 )
-debug_mode = false
-debug_path = null
-debug_wpt = null
 target = NodePath("../target")
 
 [node name="TestCube" type="TestCube" parent="npc"]

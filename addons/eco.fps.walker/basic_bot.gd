@@ -48,7 +48,6 @@ func _init_fsm_attack():
 	fsm_action.add_link("attack","decide","condition",[self,"fsm_attack_finished",true])
 	fsm_action.add_link("main","attack","condition",[self,"fsm_can_attack",true])
 
-
 func _integrate_forces(state):
 	if not alive:
 		return

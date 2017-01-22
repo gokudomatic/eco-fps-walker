@@ -13,6 +13,8 @@ export(NodePath) var debug_path
 export(NodePath) var debug_wpt
 
 const UP=Vector3(0,1,0)
+const UP_mask=Vector3(1,0,1)
+
 export(NodePath) var target setget set_target
 export(NodePath) var navigation setget set_navigation
 var current_target_ref=null
@@ -99,7 +101,7 @@ func _integrate_forces(state):
 		var target_transform=target_ray.get_global_transform().looking_at(get_target().get_global_transform().origin+get_target_offset(get_target()),UP).orthonormalized()
 		target_ray.set_global_transform(target_transform)
 	else:
-		target_ray.set_rotation(Vector3(0,0,0))
+		target_ray.set_rotation(Vector3())
 	
 	fsm_action.process(state.get_step())
 	
@@ -110,6 +112,7 @@ func _integrate_forces(state):
 			waypoint_timeout-=state.get_step()
 	
 	do_current_action(state)
+	
 
 func do_current_action(state):
 	var current_t=get_global_transform()
@@ -152,7 +155,7 @@ func do_current_action(state):
 				var offset=Vector3(0,0,0)
 				if get_target():
 					offset=get_target_offset(get_target())
-				var tt=current_t.looking_at(current_waypoint+offset,Vector3(0,1,0))
+				var tt=current_t.looking_at(current_waypoint+offset,UP)
 				target_z=tt.basis.z
 			else:
 				target_z=current_direction
@@ -216,7 +219,7 @@ func calculate_destination(force_recalculate=false):
 	if get_target() and navmesh!=null:
 		var did_reach_wpt=current_waypoint!=null and (current_waypoint-get_translation()).length()<WAYPOINT_ERROR_DELTA
 		if force_recalculate or current_waypoint==null or did_reach_wpt or waypoint_timeout<=0:
-			_update_waypoint(did_reach_wpt)
+			_update_waypoint(get_target().get_global_transform().origin,did_reach_wpt)
 	else:
 		var curr_pos
 		if get_target():
@@ -231,7 +234,7 @@ func calculate_destination(force_recalculate=false):
 		waypoint_timeout=WAYPOINT_MAX_TIMEOUT
 	
 	var old_direction=current_direction
-	current_direction=get_global_transform().looking_at(current_waypoint+offset,Vector3(0,1,0)).orthonormalized().basis.z
+	current_direction=get_global_transform().looking_at(current_waypoint+offset,UP).orthonormalized().basis.z
 	if (current_direction+old_direction).length()<1.2:
 		fsm_action.set_state("turn")
 	
@@ -244,7 +247,7 @@ func calculate_destination(force_recalculate=false):
 func get_waypoint_no_target():
 	return get_global_transform().origin
 
-func _update_waypoint(reached_wpt):
+func _update_waypoint(target_coord,reached_wpt):
 	
 	var current_t=get_global_transform()
 	var cur_dir=current_t.basis.z
@@ -252,7 +255,7 @@ func _update_waypoint(reached_wpt):
 	#convert start and end points to local
 	var navt=navmesh.get_global_transform()
 	var local_begin=navt.xform_inv(current_t.origin)
-	var local_end=navt.xform_inv(get_target().get_global_transform().origin)
+	var local_end=navt.xform_inv(target_coord)
 	
 	#calculate path
 	var begin=navmesh.get_closest_point(local_begin)
@@ -343,7 +346,6 @@ func check_ground_sensor(sensor):
 		return true
 
 func _action_state_changed(state_from,state_to,params):
-	
 	if state_to=="move":
 		calculate_destination()
 	
@@ -381,9 +383,11 @@ func get_target():
 		result=false
 	else:
 		result=current_target_ref.get_ref()
-	
-	if !result and current_waypoint!=null:
-		current_waypoint=null
+		
+		if !result and current_waypoint!=null:
+			current_waypoint=null
+			current_target_ref=null
+		
 	return result
 
 func set_navigation(n):
