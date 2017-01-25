@@ -13,7 +13,7 @@ The AI can use a navigation node to calculate an optimal path to a destination p
 This implementation allows the bot to follow a moving target, like a human player. It also take in account difficult paths, like stairs and U-turn around a wall, which can cause problems when the bot has a large body. It is also tolerant to strange paths of the navigation mesh (won't be needed if the route calculation is improved in the future).
 
 ### No need for a navigation mesh
-The bot can improve its path by using a navigation node but it's not mandatory. In the absence of a navmesh the target goes directly to the target
+The bot can improve its path by using a navigation node but it's not mandatory. In the absence of a navmesh the target goes directly to the target. Of course it won't be able to avoid dead ends. But if there's no obstacle that requires path finding, this mode is very functionnal and usually it's enough.
 
 ### Avoid walls and holes
 Wether the bot uses a navigation node or not, it will avoid holes and walls. Thanks to a concept of watching his steps the bot can detect if the path is clear. It uses a stereo detector which tells him if the hindrance is at its left or right, or both. The bot will then turn around and try another direction.
