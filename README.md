@@ -59,7 +59,9 @@ Thanks to the state machine implemented in the core, the proper way to implement
 
 #### Declaration
 The standard states are declared in one field called action_states, defined like this example:
+
 const action_states=["sleep","move","turn","wait","my_state1","my_state2","some_state"]
+
 It's a required step, unless you are happy with the default states.
 
 #### Configuration
