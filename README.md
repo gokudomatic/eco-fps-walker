@@ -8,7 +8,7 @@ As long as there is a map with collision feature (physics body), the bot impleme
 The bots implement a state machine that allows to configure easily complex behaviours with a simple declarative code.
 
 ### Travel with dynamic waypoints
-The AI can use a navigation node to calculate an optimal path to a destination point. But rather than following each point of the calculated route, it will take the first waypoint to reach and move to this destination. When the waypoint is reached, a new route is calculated. And so on until the real destination point is reached. When the AI reaches the last waypoint, it will directly go to the final destination.
+The AI can use a navigation node to calculate an optimal path to a destination point. But rather than following each point of the calculated route, it will take the first waypoint to reach and move to this destination. When the waypoint is reached, a new route is calculated. And so on until the real destination point is reached. When the AI reaches the last waypoint, it will directly go to the final destination. That means it will chase the target even if it's moving.
 
 This implementation allows the bot to follow a moving target, like a human player. It also take in account difficult paths, like stairs and U-turn around a wall, which can cause problems when the bot has a large body. It is also tolerant to strange paths of the navigation mesh (won't be needed if the route calculation is improved in the future).
 
@@ -49,7 +49,7 @@ The walker_core has 2 signals:
 * action_changed : sent when the bot's state changed. The parameter is the new state.
 
 ### Communication between bot and children
-When the bot needs an event from the child, the recommended way is to implement a signal in the child node and extend the bot script to handle the signal event. For instance, a simple bot that attacks a target and has an attack animation must be able to send a signal to the bot for when the animation reaches the moment where the attack reaches the target. Also, when the attack animation ends, the bot must know that the attack ended and change its state to the next one.
+When the bot needs an event from the child, the recommended way is to implement a signal in the child node and extend the bot script to handle the signal event. For instance, a simple bot that attacks a target and it has an attack animation that must be able to send a signal to the bot for when the animation reaches the moment where the attack reaches the target. Also, when the attack animation ends, the bot must know that the attack ended and change its state to the next one.
 
 ## Add features
 Those scripts are usually too basic to be used as it is in a game. They are meant to be extended, like in demo 8 where a simple patrolling behaviour is implemented while still attacking any target at sight. You can either use the simple_bot or basic_guard as a base for your own code, or start with walker_core to implement from almost scratch your own bot.
@@ -100,6 +100,10 @@ Also, since the bot is a rigid body, it might bounce if it walks down a long ste
 
 ### U-turn in stairs
 This case is definitely the worst scenario case for the bot. Without path finding it's almost impossible that the bot reaches the target. And even with a navigation node, it will struggle to turn around a corner in U-turn. If there's no wall, there is even a risk, though very small, that the bot falls of the stairs.
+
+### Speed
+The speed factor, which is a parameter, has a great impact in the collision detection quality. If you set a high speed to the bot, it won't be able to avoid collisions and holes as well as when it's walking at lower speed. Especially near a cliff or of a bridge, the risk to fall is related to the speed. It has also to do with the inertia of the rigid body of the bot, where higher speed means longer time to brake.
+One way to avoid that would be to extend the script to dynamically change the speed when the bot is near a hole. Usually the problem arises when the bot goes in a U-turn at high speed.
 
 ### Strange behaviors
 Sometimes the bot can suddenly backtrack or turn in circles for a little moment. Those are the limitations of the AI implementation and the path finding of Godot. It's optimized for performance but at the cost of some glitches in the path finding. And in rare special cases the bot can fall down a cliff. To reduce the risk that happens you can either adapt the level design or extend the script to fix this particular case.
