@@ -86,6 +86,10 @@ Beware that a wrong state name will cause an error and make the bot unstable.
 
 ## Tips and pitfalls
 
+### Debug mode
+The script contains a debug mode that display the calculated route and the current waypoint. See the samples for further information.
+This can help the level designer to optimize the level where the bot can have trouble finding its way.
+
 ### Stairs and slopes
 The bot is technically unable to climb real stairs. You must make the collision shape of the stairs like slopes, otherwise it won't work.
 
@@ -94,3 +98,8 @@ Also, since the bot is a rigid body, it might bounce if it walks down a long ste
 
 ### U-turn in stairs
 This case is definitely the worst scenario case for the bot. Without path finding it's almost impossible that the bot reaches the target. And even with a navigation node, it will struggle to turn around a corner in U-turn. If there's no wall, there is even a risk, though very small, that the bot falls of the stairs.
+
+### Strange behaviors
+Sometimes the bot can suddenly backtrack or turn in circles for a little moment. Those are the limitations of the AI implementation and the path finding of Godot. It's optimized for performance but at the cost of some glitches in the path finding. And in rare special cases the bot can fall down a cliff. To reduce the risk that happens you can either adapt the level design or extend the script to fix this particular case.
+
+In other words you can be 'almost' certain that the bot won't get eternally stuck somewhere, or fall down a hole, but it's hard to say how much time it will take. However its path is very predictable, as the bot will always take the same route. That helps a lot for test cases.
