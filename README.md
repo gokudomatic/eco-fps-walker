@@ -78,3 +78,5 @@ Beware that a wrong state name will cause an error and make the bot unstable.
 
 ## Tips and pitfalls
 
+### U-turn in stairs
+This case is definitely the worst scenario case for the bot. Without path finding it's almost impossible that the bot reaches the target. And even with a navigation node, it will struggle to turn around a corner in U-turn. If there's no wall, there is even a risk, though very small, that the bot falls of the stairs.
