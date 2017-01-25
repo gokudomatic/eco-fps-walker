@@ -16,7 +16,7 @@ This implementation allows the bot to follow a moving target, like a human playe
 The bot can improve its path by using a navigation node but it's not mandatory. In the absence of a navmesh the target goes directly to the target
 
 ### Avoid walls and holes
-Wether the bot uses a navigation node or or, it will avoid holes and walls. Thanks to a concept of watching his steps the bot can detect if the path is clear. It uses a stereo detector which tells him if the hindrance is at its left or right, or both. The bot will then turn around and try another direction.
+Wether the bot uses a navigation node or not, it will avoid holes and walls. Thanks to a concept of watching his steps the bot can detect if the path is clear. It uses a stereo detector which tells him if the hindrance is at its left or right, or both. The bot will then turn around and try another direction.
 
 ## Types of bots
 There are 3 kinds of AI:
