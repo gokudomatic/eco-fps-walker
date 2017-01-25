@@ -26,6 +26,13 @@ There are 3 kinds of AI:
 
 ## Demos
 
+[![Demos part 1](http://img.youtube.com/vi/FJbStSlSJgY/0.jpg)](https://www.youtube.com/watch?v=FJbStSlSJgY)
+[![Demos part 2](http://img.youtube.com/vi/pRPh9VJlANY/0.jpg)](https://www.youtube.com/watch?v=pRPh9VJlANY)
+[![Demos part 3](http://img.youtube.com/vi/iClqDfMWYWk/0.jpg)](https://www.youtube.com/watch?v=iClqDfMWYWk)
+
+older demo
+[![Demos part 3](http://img.youtube.com/vi/Kj0Vu-ShVWQ/0.jpg)](https://www.youtube.com/watch?v=Kj0Vu-ShVWQ)
+
 ## Installation
 Either install from the asset store or copy the content of the addons folder in your project root folder.
 The samples folder can be deleted.
