@@ -1,0 +1,160 @@
+[gd_scene load_steps=5 format=1]
+
+[sub_resource type="CapsuleShape" id=1]
+
+radius = 0.6
+height = 0.8
+
+[sub_resource type="GDScript" id=2]
+
+script/source = "extends KinematicBody\n\nvar _is_loaded = false\nvar velocity=Vector3()\nvar yaw = 0\nvar pitch = 0\nvar is_moving=false\nvar on_floor=false\nvar jump_timeout=0\nvar step_timeout=0\nvar fly_mode=false\nvar alive=true\nvar is_jumping=false\nvar is_running=false\nvar is_crouching=false\nvar body_position=\"stand\"\nvar jump_strength=9\nvar node_camera=null\nvar node_leg=null\nvar node_yaw=null\nvar node_body=null\nvar node_head_check=null\nvar node_action_ray=null\nvar node_ray = null\nvar node_step_ray=null\nvar aim_offset=Vector3(0,1.5,0)\nconst GRAVITY_FACTOR=3\nexport(bool) var active=true setget _set_active\nexport(float) var walk_speed=15\nexport(float) var run_factor=3\nexport(float) var crouch_factor=0.2\nexport(float) var leg_length=0.4 setget _set_leg_length\nexport(float) var body_radius=0.6 setget _set_body_radius\nexport(float) var body_height=0.8 setget _set_body_height\nexport(float) var camera_height=1.7 setget _set_camera_height\nexport(float) var action_range=2 setget _set_action_range\nexport(String) var action_forward=\"ui_up\"\nexport(String) var action_backward=\"ui_down\"\nexport(String) var action_left=\"ui_left\"\nexport(String) var action_right=\"ui_right\"\nexport(String) var action_action1=\"ui_action1\"\nexport(String) var action_jump=\"ui_jump\"\nexport(String) var action_use=\"ui_select\"\nexport(float) var ACCEL= 2\nexport(float) var DEACCEL= 4 \nexport(float) var FLY_SPEED=100\nexport(float) var FLY_ACCEL=4\nexport(float) var GRAVITY=-9.8\nexport(float) var MAX_JUMP_TIMEOUT=0.2\nexport(float) var MAX_ATTACK_TIMEOUT=0.2\nexport(int) var MAX_SLOPE_ANGLE = 40\nexport(float) var STAIR_RAYCAST_HEIGHT=0.75\nexport(float) var STAIR_RAYCAST_DISTANCE=0.58\nexport(float) var STAIR_JUMP_SPEED=5\nexport(float) var STAIR_JUMP_TIMEOUT=0.1\nexport(float) var footstep_factor=0.004\nexport(float) var view_sensitivity = 0.3\nfunc _ready():\n\t_build_structure()\n\t_is_loaded=true\n\t_update_params()\n\tnode_action_ray.add_exception(self)\n\tset_fixed_process(true)\n\tset_process_input(true)\n\nfunc _build_structure():\n\tnode_camera=get_node(\"eco_yaw/camera\")\n\tnode_leg=get_node(\"eco_body/leg\")\n\tnode_yaw=get_node(\"eco_yaw\")\n\tnode_body=get_node(\"eco_body\")\n\tnode_head_check=get_node(\"head_check_area\")\n\tnode_action_ray=get_node(\"eco_yaw/camera/actionRay\")\n\tnode_ray=get_node(\"eco_ray\")\n\tnode_step_ray=get_node(\"eco_stepRay\")\n\nfunc _update_params():\n\t_set_active(active)\n\t_set_leg_length(leg_length)\n\t_set_body_radius(body_radius)\n\t_set_body_height(body_height)\n\t_set_camera_height(camera_height)\n\t_set_action_range(action_range)\n\nfunc _embed_children():\n\tvar children=self.get_children()\n\tfor child in children:\n\t\tif child.get_name().left(4)==\"eco_\":\n\t\t\tcontinue\n\t\telse:\n\t\t\tremove_child(child)\n\t\t\tnode_camera.add_child(child)\n\nfunc _input(ie):\n\tif not active:\n\t\treturn\n\t\n\tif ie.type == InputEvent.MOUSE_MOTION:\n\t\tyaw = fmod(yaw - ie.relative_x * view_sensitivity, 360)\n\t\tpitch = max(min(pitch - ie.relative_y * view_sensitivity, 90), -90)\n\t\tnode_yaw.set_rotation(Vector3(0, deg2rad(yaw), 0))\n\t\tnode_camera.set_rotation(Vector3(deg2rad(pitch), 0, 0))\n\t\n\tif ie.type == InputEvent.KEY:\n\t\tif Input.is_action_pressed(action_use):\n\t\t\tvar ray=node_action_ray\n\t\t\tif ray.is_colliding():\n\t\t\t\tvar obj=ray.get_collider()\n\t\t\t\tif obj.has_method(\"use\"):\n\t\t\t\t\tobj.use(self)\n\t\tif Input.is_action_pressed(\"ui_toggle_crouch\"):\n\t\t\tif body_position==\"crouch\":\n\t\t\t\tstand()\n\t\t\t\tbody_position=\"stand\"\n\t\t\telse:\n\t\t\t\tcrouch()\n\t\t\t\tbody_position=\"crouch\"\n\nfunc _fixed_process(delta):\n\tif fly_mode:\n\t\t_fly(delta)\n\telse:\n\t\t_walk(delta)\n\nfunc _enter_tree():\n\tif active:\n\t\tInput.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)\n\nfunc _exit_tree():\n\tInput.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)\n\nfunc _fly(delta):\n\tvar aim = node_camera.get_global_transform().basis\n\tvar direction = Vector3()\n\tif Input.is_action_pressed(action_forward):\n\t\tdirection -= aim[2]\n\tif Input.is_action_pressed(action_backward):\n\t\tdirection += aim[2]\n\tif Input.is_action_pressed(action_left):\n\t\tdirection -= aim[0]\n\tif Input.is_action_pressed(action_right):\n\t\tdirection += aim[0]\n\tdirection = direction.normalized()\n\tvar target=direction*FLY_SPEED\n\tvelocity=Vector3().linear_interpolate(target,FLY_ACCEL*delta)\n\tvar motion=velocity*delta\n\tmotion=move(motion)\n\tvar original_vel=velocity\n\tvar attempts=4\n\twhile(attempts and is_colliding()):\n\t\tvar n=get_collision_normal()\n\t\tmotion=n.slide(motion)\n\t\tvelocity=n.slide(velocity)\n\t\tif(original_vel.dot(velocity)>0):\n\t\t\tmotion=move(motion)\n\t\t\tif (motion.length()<0.001):\n\t\t\t\tbreak\n\t\tattempts-=1\n\nfunc _walk(delta):\n\tif jump_timeout>0:\n\t\tjump_timeout-=delta\n\tvar aim = node_camera.get_global_transform().basis\n\tvar direction = Vector3()\n\tif Input.is_action_pressed(action_forward):\n\t\tdirection -= aim[2]\n\tif Input.is_action_pressed(action_backward):\n\t\tdirection += aim[2]\n\tif Input.is_action_pressed(action_left):\n\t\tdirection -= aim[0]\n\tif Input.is_action_pressed(action_right):\n\t\tdirection += aim[0]\n\tis_running=Input.is_action_pressed(\"ui_run\")\n\tvar crouch_mode=body_position==\"crouch\"\n\tvar is_crouch_pressed=Input.is_action_pressed(\"ui_crouch\")\n\tif is_crouching and (crouch_mode==is_crouch_pressed):\n\t\tstand()\n\telif not is_crouching and (crouch_mode!=is_crouch_pressed):\n\t\tcrouch()\n\tis_moving=(direction.length()>0)\n\tdirection.y=0\n\tdirection = direction.normalized()\n\tvar is_ray_colliding=node_ray.is_colliding()\n\tif !on_floor and jump_timeout<=0 and is_ray_colliding:\n\t\tset_translation(node_ray.get_collision_point())\n\t\ton_floor=true\n\telif on_floor and not is_ray_colliding:\n\t\ton_floor=false\n\tif on_floor:\n\t\tif step_timeout<=0:\n\t\t\tstep_timeout=1\n\t\telse:\n\t\t\tstep_timeout-=velocity.length()*footstep_factor\n\t\tvar n=node_ray.get_collision_normal()\n\t\tvelocity=velocity-velocity.dot(n)*n\n\t\tif is_moving and node_step_ray.is_colliding():\n\t\t\tvar step_normal=node_step_ray.get_collision_normal()\n\t\t\tif (rad2deg(acos(step_normal.dot(Vector3(0,1,0))))< MAX_SLOPE_ANGLE):\n\t\t\t\tvelocity.y=STAIR_JUMP_SPEED\n\t\t\t\tjump_timeout=STAIR_JUMP_TIMEOUT\n\t\tif (rad2deg(acos(n.dot(Vector3(0,1,0))))> MAX_SLOPE_ANGLE):\n\t\t\tvelocity.y+=delta*GRAVITY*GRAVITY_FACTOR\n\telse:\n\t\tvelocity.y+=delta*GRAVITY*GRAVITY_FACTOR\n\tvar target=direction*get_walk_speed(is_crouching,is_running)\n\tvar accel=DEACCEL\n\tif is_moving:\n\t\taccel=ACCEL\n\tvar hvel=velocity\n\thvel.y=0\n\thvel=hvel.linear_interpolate(target,accel*delta)\n\tvelocity.x=hvel.x\n\tvelocity.z=hvel.z\n\tvar motion=velocity*delta\n\tmotion=move(motion)\n\tvar original_vel=velocity\n\tif(motion.length()>0 and is_colliding()):\n\t\tvar n=get_collision_normal()\n\t\tmotion=n.slide(motion)\n\t\tvelocity=n.slide(velocity)\n\t\tif(original_vel.dot(velocity)>0):\n\t\t\tmotion=move(motion)\n\tif on_floor:\n\t\tvar floor_velocity=_get_floor_velocity(node_ray,delta)\n\t\tif floor_velocity.length()!=0:\n\t\t\tmove(floor_velocity*delta)\n\t\tif Input.is_action_pressed(action_jump) and body_position==\"stand\":\n\t\t\tvelocity.y=jump_strength\n\t\t\tjump_timeout=MAX_JUMP_TIMEOUT\n\t\t\ton_floor=false\n\tif is_moving:\n\t\tvar sensor_position=Vector3(direction.z,0,-direction.x)*STAIR_RAYCAST_DISTANCE\n\t\tsensor_position.y=STAIR_RAYCAST_HEIGHT\n\t\tnode_step_ray.set_translation(sensor_position)\n\nfunc _get_floor_velocity(ray,delta):\n\tvar floor_velocity=Vector3()\n\tvar object = ray.get_collider()\n\tif object extends RigidBody or object extends StaticBody:\n\t\tvar floor_angular_vel = Vector3()\n\t\tif object extends RigidBody:\n\t\t\tfloor_velocity = object.get_linear_velocity()\n\t\t\tfloor_angular_vel = object.get_angular_velocity()\n\t\telif object extends StaticBody:\n\t\t\tfloor_velocity = object.get_constant_linear_velocity()\n\t\t\tfloor_angular_vel = object.get_constant_angular_velocity()\n\t\tif(floor_angular_vel.length()>0):\n\t\t\tvar transform = Matrix3(Vector3(1, 0, 0), floor_angular_vel.x)\n\t\t\ttransform = transform.rotated(Vector3(0, 1, 0), floor_angular_vel.y)\n\t\t\ttransform = transform.rotated(Vector3(0, 0, 1), floor_angular_vel.z)\n\t\t\tvar point = ray.get_collision_point() - object.get_translation()\n\t\t\tfloor_velocity += transform.xform_inv(point) - point\n\t\t\tyaw = fmod(yaw + rad2deg(floor_angular_vel.y) * delta, 360)\n\t\t\tnode_yaw.set_rotation(Vector3(0, deg2rad(yaw), 0))\n\treturn floor_velocity\n\nfunc _on_ladders_body_enter( body ):\n\tif body==self:\n\t\tfly_mode=true\n\nfunc _on_ladders_body_exit( body ):\n\tif body==self:\n\t\tfly_mode=false\n\nfunc crouch():\n\tnode_body.get_shape().set_height(0.1)\n\tnode_body.get_shape().set_radius(0.1)\n\tnode_body.set_translation(Vector3(0,0.55,0))\n\tnode_camera.set_translation(Vector3(0,0.4,0))\n\tnode_leg.set_translation(Vector3(0,0,0.1))\n\tis_crouching=true\n\tnode_head_check.set_enable_monitoring(true)\n\t\nfunc stand():\n\tif node_head_check.get_overlapping_bodies().size()>0:\n\t\treturn\n\tnode_body.get_shape().set_height(0.8)\n\tnode_body.get_shape().set_radius(0.6)\n\tnode_body.set_translation(Vector3(0,1.4,0))\n\tnode_camera.set_translation(Vector3(0,1.7,0))\n\tnode_leg.set_translation(Vector3(0,0,1))\n\tis_crouching=false\n\tnode_head_check.set_enable_monitoring(false)\n\nfunc get_walk_speed(is_crouching,is_running):\n\tvar speed=walk_speed\n\tif is_crouching:\n\t\tspeed*=crouch_factor\n\tif is_running:\n\t\tspeed*=run_factor\n\treturn speed\n\nfunc _set_leg_length(value):\n\tleg_length=value\n\tif _is_loaded:\n\t\tnode_leg.get_shape().set_length(value)\n\t\tnode_ray.set_cast_to(Vector3(0,-value*2,0))\n\nfunc _set_body_radius(value):\n\tbody_radius=value\n\tif _is_loaded:\n\t\tnode_body.get_shape().set_radius(value)\n\nfunc _set_body_height(value):\n\tbody_height=value\n\tif _is_loaded:\n\t\tnode_body.get_shape().set_height(value)\n\nfunc _set_camera_height(value):\n\tcamera_height=value\n\tif _is_loaded:\n\t\tnode_camera.set_translation(Vector3(0,value,0))\n\nfunc _set_action_range(value):\n\taction_range=value\n\tif _is_loaded:\n\t\tnode_action_ray.set_cast_to(Vector3(0,0,-value))\n\nfunc _set_active(value):\n\tif value!=active:\n\t\tactive=value\n\t\tif active:\n\t\t\tInput.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)\n\t\telse:\n\t\t\tInput.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)\n"
+
+[sub_resource type="RayShape" id=3]
+
+length = 0.4
+
+[sub_resource type="SphereShape" id=4]
+
+radius = 0.1874
+
+[node name="actor" type="KinematicBody"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+input/ray_pickable = true
+input/capture_on_drag = false
+shape_count = 1
+shapes/0/shape = SubResource( 1 )
+shapes/0/transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.4, 0 )
+shapes/0/trigger = false
+collision/layers = 1
+collision/mask = 5
+collide_with/static = true
+collide_with/kinematic = true
+collide_with/rigid = true
+collide_with/character = true
+collision/margin = 0.001
+script/script = SubResource( 2 )
+__meta__ = { "__editor_plugin_screen__":"3D" }
+active = true
+walk_speed = 15
+run_factor = 3
+crouch_factor = 0.2
+leg_length = 0.4
+body_radius = 0.6
+body_height = 0.8
+camera_height = 1.7
+action_range = 2
+action_forward = "ui_up"
+action_backward = "ui_down"
+action_left = "ui_left"
+action_right = "ui_right"
+action_action1 = "ui_action1"
+action_jump = "ui_jump"
+action_use = "ui_select"
+ACCEL = 2
+DEACCEL = 4
+FLY_SPEED = 100
+FLY_ACCEL = 4
+GRAVITY = -9.8
+MAX_JUMP_TIMEOUT = 0.2
+MAX_ATTACK_TIMEOUT = 0.2
+MAX_SLOPE_ANGLE = 40
+STAIR_RAYCAST_HEIGHT = 0.75
+STAIR_RAYCAST_DISTANCE = 0.58
+STAIR_JUMP_SPEED = 5
+STAIR_JUMP_TIMEOUT = 0.1
+footstep_factor = 0.004
+view_sensitivity = 0.3
+
+[node name="eco_body" type="CollisionShape" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.4, 0 )
+shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="leg" type="CollisionShape" parent="eco_body"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+shape = SubResource( 3 )
+trigger = false
+_update_shape_index = -1
+
+[node name="eco_yaw" type="Spatial" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="camera" type="Camera" parent="eco_yaw"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0 )
+projection = 0
+fov = 60.0
+near = 0.1
+far = 1000.0
+keep_aspect = 1
+current = true
+visible_layers = 1048575
+environment = null
+h_offset = 0.0
+v_offset = 0.0
+
+[node name="actionRay" type="RayCast" parent="eco_yaw/camera"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+enabled = true
+cast_to = Vector3( 0, 0, -2 )
+layer_mask = 1
+type_mask = 15
+
+[node name="eco_ray" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0 )
+enabled = true
+cast_to = Vector3( 0, -0.8, 0 )
+layer_mask = 1
+type_mask = 15
+
+[node name="eco_stepRay" type="RayCast" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.58 )
+enabled = true
+cast_to = Vector3( 0, -0.5, 0 )
+layer_mask = 1
+type_mask = 15
+
+[node name="head_check_area" type="Area" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.21862, 0 )
+input/ray_pickable = false
+input/capture_on_drag = false
+shape_count = 1
+shapes/0/shape = SubResource( 4 )
+shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+shapes/0/trigger = false
+space_override = 0
+gravity_point = false
+gravity_distance_scale = 0.0
+gravity_vec = Vector3( 0, -1, 0 )
+gravity = 9.8
+linear_damp = 0.1
+angular_damp = 1.0
+priority = 0.0
+monitoring = false
+monitorable = false
+collision/layers = 1
+collision/mask = 1
+
+[node name="CollisionShape" type="CollisionShape" parent="head_check_area"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 4 )
+trigger = false
+_update_shape_index = 0
+
+

@@ -1,0 +1,286 @@
+[gd_scene load_steps=11 format=1]
+
+[ext_resource path="res://samples/commons/tileset/tileset.tres" type="MeshLibrary" id=1]
+[ext_resource path="res://addons/eco.fps.walker/basic_guard.tscn" type="PackedScene" id=2]
+[ext_resource path="res://samples/commons/man/human_walk_0.scn" type="PackedScene" id=3]
+[ext_resource path="res://samples/demo_9/light_fps_controller.tscn" type="PackedScene" id=4]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Spatial\n\nfunc _ready():\n\tset_process_input(true)\n\n# code for halting the demo when the user press ESC (ui_cancel)\nfunc _input(event):\n\tif Input.is_action_pressed(\"ui_cancel\"):\n\t\tget_tree().quit()"
+
+[sub_resource type="Environment" id=2]
+
+ambient_light/enabled = true
+ambient_light/color = Color( 0.914062, 0.914062, 0.914062, 1 )
+ambient_light/energy = 1.0
+fxaa/enabled = false
+background/mode = 1
+background/color = Color( 0, 0, 0, 1 )
+background/energy = 1.0
+background/scale = 1.0
+background/glow = 0.0
+background/canvas_max_layer = null
+glow/enabled = false
+glow/blur_passes = 1
+glow/blur_scale = 1
+glow/blur_strength = 1
+glow/blur_blend_mode = null
+glow/bloom = 0.0
+glow/bloom_treshold = 0.5
+dof_blur/enabled = false
+dof_blur/blur_passes = 1
+dof_blur/begin = 100.0
+dof_blur/range = 10.0
+hdr/enabled = false
+hdr/tonemapper = 0
+hdr/exposure = 0.4
+hdr/white = 1.0
+hdr/glow_treshold = 0.95
+hdr/glow_scale = 0.2
+hdr/min_luminance = 0.4
+hdr/max_luminance = 8.0
+hdr/exposure_adj_speed = 0.5
+fog/enabled = false
+fog/begin = 100.0
+fog/begin_color = Color( 0, 0, 0, 1 )
+fog/end_color = Color( 0, 0, 0, 1 )
+fog/attenuation = 1.0
+fog/bg = true
+bcs/enabled = false
+bcs/brightness = 1.0
+bcs/contrast = 1.0
+bcs/saturation = 1.0
+srgb/enabled = false
+
+[sub_resource type="FixedMaterial" id=3]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = false
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 0.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 1, 0.820312, 0, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="FixedMaterial" id=4]
+
+flags/visible = true
+flags/double_sided = false
+flags/invert_faces = false
+flags/unshaded = true
+flags/on_top = false
+flags/lightmap_on_uv2 = true
+flags/colarray_is_srgb = true
+params/blend_mode = 0
+params/depth_draw = 1
+params/line_width = 1.0
+fixed_flags/use_alpha = false
+fixed_flags/use_color_array = false
+fixed_flags/use_point_size = false
+fixed_flags/discard_alpha = false
+fixed_flags/use_xy_normalmap = false
+params/diffuse = Color( 1, 1, 1, 1 )
+params/specular = Color( 0, 0, 0, 1 )
+params/emission = Color( 0, 0, 0, 1 )
+params/specular_exp = 40
+params/detail_mix = 1.0
+params/normal_depth = 1
+params/shader = 0
+params/shader_param = 0.5
+params/glow = 0
+params/point_size = 1.0
+uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+textures/diffuse_tc = 0
+textures/detail_tc = 0
+textures/specular_tc = 0
+textures/emission_tc = 0
+textures/specular_exp_tc = 0
+textures/glow_tc = 0
+textures/normal_tc = 0
+textures/shade_param_tc = 0
+
+[sub_resource type="GDScript" id=5]
+
+script/source = "extends \"res://addons/eco.fps.walker/basic_guard.gd\"\n\nconst tour=[Vector3(1,4,-7),Vector3(1,4,21),Vector3(29,4,21),Vector3(29,4,-7)]\n\nvar attack_is_finished=false\nvar tour_id=0\n\nfunc _init_fsm_move():\n\tfsm_action.add_link(\"wait\",\"decide\",\"timeout\",[0.2])\n\tfsm_action.add_link(\"move\",\"decide\",\"timeout\",[2])\n\tfsm_action.add_link(\"turn\",\"decide\",\"timeout\",[1])\n\tfsm_action.add_link(\"sleep\",\"decide\",\"timeout\",[3])\n\tfsm_action.add_link(\"decide\",\"move\",\"timeout\",[0.1])\n\tfsm_action.add_link(\"scan\",\"decide\",\"condition\",[self,\"fsm_has_no_target\",false])\n\tfsm_action.add_link(\"scan\",\"sleep\",\"timeout\",[1])\n\nfunc get_waypoint_no_target():\n\tvar tour_point=tour[tour_id]\n\tif tour_point.distance_to(get_global_transform().origin)<WAYPOINT_ERROR_DELTA:\n\t\ttour_id=(tour_id+1) % tour.size()\n\t\ttour_point=tour[tour_id]\n\treturn tour_point\n\nfunc _on_model_attack_ended():\n\tattack_is_finished=true\n\nfunc fsm_attack_finished():\n\tif attack_is_finished:\n\t\tattack_is_finished=false\n\t\treturn true\n\telse:\n\t\treturn false\n\nfunc _on_model_attack_hit():\n\tif get_target().has_method(\"hit\"):\n\t\tget_target().hit()\n"
+
+[sub_resource type="SphereShape" id=6]
+
+radius = 0.404152
+
+[node name="world" type="Spatial"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+script/script = SubResource( 1 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+environment = SubResource( 2 )
+
+[node name="wpt" type="TestCube" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 0.133751, 0, 0, 0, 0.133751, 0, 0, 0, 0.133751, 17.3796, 34.0002, 26.9416 )
+layers = 1
+geometry/visible = true
+geometry/material_override = SubResource( 3 )
+geometry/cast_shadow = 1
+geometry/receive_shadows = true
+geometry/range_begin = 0.0
+geometry/range_end = 0.0
+geometry/extra_cull_margin = 0.0
+geometry/billboard = false
+geometry/billboard_y = false
+geometry/depth_scale = false
+geometry/visible_in_all_rooms = false
+geometry/use_baked_light = false
+geometry/baked_light_tex_id = 0
+
+[node name="Navigation" type="Navigation" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+up_vector = Vector3( 0, 1, 0 )
+
+[node name="GridMap" type="GridMap" parent="Navigation"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+theme/theme = ExtResource( 1 )
+theme/bake = true
+lighting/bake = false
+cell/size = 2.0
+cell/octant_size = 4
+cell/center_x = true
+cell/center_y = true
+cell/center_z = true
+cell/scale = 1.0
+data = { "cells":IntArray( 0, 0, 9, 2, 0, 9, 4, 0, 9, 6, 0, 9, 8, 0, 9, 10, 0, 9, 14, 0, 9, 131083, 0, 1441799, 131085, 0, 1048583, 131087, 0, 1441799, 196607, 0, 1048583, 196608, 0, 655368, 196610, 0, 655368, 196612, 0, 655368, 196614, 0, 655368, 196616, 0, 655368, 196618, 0, 655368, 196622, 0, 655368, 131074, 1, 655367, 131076, 1, 655367, 131078, 1, 655367, 262146, 1, 7, 262148, 1, 7, 262150, 1, 7, 262152, 1, 7, 393216, 1, 7, 393218, 1, 7, 393220, 1, 7, 393222, 1, 7, 524288, 1, 7, 524290, 1, 7, 524292, 1, 7, 0, 2, 9, 10, 2, 9, 14, 2, 9, 131073, 2, 1441799, 131080, 2, 3, 131083, 2, 1441799, 131085, 2, 1048583, 131087, 2, 1441799, 196607, 2, 1048583, 196608, 2, 655368, 196614, 2, 3, 196618, 2, 655368, 196622, 2, 655368, 262144, 2, 9, 262148, 2, 3, 262153, 2, 1441799, 327682, 2, 3, 393224, 2, 1441792, 458751, 2, 1048583, 458760, 2, 1441792, 524294, 2, 1441792, 589823, 2, 1048583, 589824, 2, 1048584, 589828, 2, 1441792, 655362, 2, 1441792, 0, 4, 9, 10, 4, 9, 14, 4, 9, 131073, 4, 1441799, 131080, 4, 3, 131083, 4, 1441799, 131085, 4, 1048583, 131087, 4, 1441799, 196607, 4, 1048583, 196608, 4, 655368, 196614, 4, 3, 196618, 4, 655368, 196622, 4, 655368, 262144, 4, 9, 262148, 4, 3, 262153, 4, 1441799, 327682, 4, 3, 393224, 4, 1441792, 458751, 4, 1048583, 458760, 4, 1441792, 524294, 4, 1441792, 589823, 4, 1048583, 589824, 4, 1048584, 589828, 4, 1441792, 655362, 4, 1441792, 131074, 5, 7, 131076, 5, 7, 131078, 5, 7, 262146, 5, 655367, 262148, 5, 655367, 262150, 5, 655367, 262152, 5, 655367, 393218, 5, 655367, 393220, 5, 655367, 393222, 5, 655367, 524290, 5, 655367, 524292, 5, 655367, 0, 6, 9, 2, 6, 9, 4, 6, 9, 6, 6, 9, 8, 6, 9, 10, 6, 9, 14, 6, 9, 131083, 6, 1441799, 131085, 6, 1048583, 131087, 6, 1441799, 196607, 6, 1048583, 196608, 6, 655368, 196610, 6, 655368, 196612, 6, 655368, 196614, 6, 655368, 196616, 6, 655368, 196618, 6, 655368, 196622, 6, 655368, 262144, 6, 9, 393217, 6, 1441799, 458751, 6, 1048583, 524289, 6, 1441799, 589823, 6, 1048583, 589824, 6, 1048584, 131074, 7, 655367, 131076, 7, 655367, 131078, 7, 655367, 131080, 7, 655367, 131082, 7, 655367, 393218, 7, 7, 393220, 7, 7, 393222, 7, 7, 458746, 7, 7, 458748, 7, 7, 458750, 7, 7, 524290, 7, 7, 524292, 7, 7, 524294, 7, 7, 589818, 7, 7, 589820, 7, 7, 589822, 7, 7, 0, 8, 9, 14, 8, 9, 131073, 8, 1441799, 131085, 8, 1048583, 131087, 8, 1441799, 196607, 8, 1048583, 196608, 8, 655368, 196622, 8, 655368, 262144, 8, 9, 262146, 8, 9, 262148, 8, 9, 262150, 8, 9, 327674, 8, 9, 327676, 8, 9, 327678, 8, 9, 393223, 8, 1441799, 458745, 8, 1048583, 524295, 8, 1441799, 589817, 8, 1048583, 589824, 8, 1048584, 589826, 8, 1048584, 589828, 8, 1048584, 589830, 8, 1048584, 655354, 8, 1048584, 655356, 8, 1048584, 655358, 8, 1048584, 131074, 9, 7, 131076, 9, 7, 131078, 9, 7, 131080, 9, 7, 131082, 9, 7, 131084, 9, 7, 0, 10, 9, 2, 10, 9, 4, 10, 9, 6, 10, 9, 8, 10, 9, 10, 10, 9, 12, 10, 9, 14, 10, 9, 131087, 10, 1441799, 196607, 10, 1048583, 196608, 10, 655368, 196610, 10, 655368, 196612, 10, 655368, 196614, 10, 655368, 196616, 10, 655368, 196618, 10, 655368, 196620, 10, 655368, 196622, 10, 655368, 262144, 10, 9, 262146, 10, 9, 262148, 10, 9, 262150, 10, 9, 327674, 10, 9, 327676, 10, 9, 327678, 10, 9, 393223, 10, 1441799, 458745, 10, 1048583, 524295, 10, 1441799, 589817, 10, 1048583, 589824, 10, 1048584, 589826, 10, 1048584, 589828, 10, 1048584, 589830, 10, 1048584, 655354, 10, 1048584, 655356, 10, 1048584, 655358, 10, 1048584, 131072, 11, 655367, 131074, 11, 655367, 131076, 11, 655367, 131078, 11, 655367, 131080, 11, 655367, 131082, 11, 655367, 131084, 11, 655367, 131086, 11, 655367, 262144, 12, 9, 262146, 12, 9, 262148, 12, 9, 262150, 12, 9, 327674, 12, 9, 327676, 12, 9, 327678, 12, 9, 393223, 12, 1441799, 458745, 12, 1048583, 524295, 12, 1441799, 589817, 12, 1048583, 589824, 12, 1048584, 589826, 12, 1048584, 589828, 12, 1048584, 589830, 12, 1048584, 655354, 12, 1048584, 655356, 12, 1048584, 655358, 12, 1048584, 262144, 14, 9, 262146, 14, 9, 262150, 14, 9, 327674, 14, 9, 327678, 14, 9, 393220, 14, 0, 393223, 14, 1441799, 458745, 14, 1048583, 458748, 14, 0, 458756, 14, 0, 524284, 14, 0, 524292, 14, 0, 524295, 14, 1441799, 589817, 14, 1048583, 589820, 14, 0, 589824, 14, 1048584, 589826, 14, 1048584, 589828, 14, 0, 589830, 14, 1048584, 655354, 14, 1048584, 655356, 14, 0, 655358, 14, 1048584, 262144, 16, 9, 262146, 16, 9, 262148, 16, 9, 262150, 16, 9, 327674, 16, 9, 327676, 16, 9, 327678, 16, 9, 393223, 16, 1441799, 458745, 16, 1048583, 524295, 16, 1441799, 589817, 16, 1048583, 589824, 16, 1048584, 589826, 16, 1048584, 589828, 16, 1048584, 589830, 16, 1048584, 655354, 16, 1048584, 655356, 16, 1048584, 655358, 16, 1048584, 262144, 18, 9, 262146, 18, 9, 262148, 18, 9, 262150, 18, 9, 327674, 18, 9, 327676, 18, 9, 327678, 18, 9, 393223, 18, 1441799, 458745, 18, 1048583, 524295, 18, 1441799, 589817, 18, 1048583, 589824, 18, 1048584, 589826, 18, 1048584, 589828, 18, 1048584, 589830, 18, 1048584, 655354, 18, 1048584, 655356, 18, 1048584, 655358, 18, 1048584, 262144, 20, 9, 262146, 20, 9, 262150, 20, 9, 327674, 20, 9, 327678, 20, 9, 393220, 20, 0, 393223, 20, 1441799, 458745, 20, 1048583, 458748, 20, 0, 458756, 20, 0, 524284, 20, 0, 524292, 20, 0, 524295, 20, 1441799, 589817, 20, 1048583, 589820, 20, 0, 589824, 20, 1048584, 589826, 20, 1048584, 589828, 20, 0, 589830, 20, 1048584, 655354, 20, 1048584, 655356, 20, 0, 655358, 20, 1048584, 262144, 22, 9, 262146, 22, 9, 262148, 22, 9, 262150, 22, 9, 327674, 22, 9, 327676, 22, 9, 327678, 22, 9, 393223, 22, 1441799, 458745, 22, 1048583, 524295, 22, 1441799, 589817, 22, 1048583, 589824, 22, 1048584, 589826, 22, 1048584, 589828, 22, 1048584, 589830, 22, 1048584, 655354, 22, 1048584, 655356, 22, 1048584, 655358, 22, 1048584, 262144, 24, 9, 262146, 24, 9, 262148, 24, 9, 262150, 24, 9, 327674, 24, 9, 327676, 24, 9, 327678, 24, 9, 393223, 24, 1441799, 458745, 24, 1048583, 524295, 24, 1441799, 589817, 24, 1048583, 589824, 24, 1048584, 589826, 24, 1048584, 589828, 24, 1048584, 589830, 24, 1048584, 655354, 24, 1048584, 655356, 24, 1048584, 655358, 24, 1048584, 262144, 26, 9, 262146, 26, 9, 262150, 26, 9, 327674, 26, 9, 327678, 26, 9, 393220, 26, 0, 393223, 26, 1441799, 458745, 26, 1048583, 458748, 26, 0, 458756, 26, 0, 524284, 26, 0, 524292, 26, 0, 524295, 26, 1441799, 589817, 26, 1048583, 589820, 26, 0, 589824, 26, 1048584, 589826, 26, 1048584, 589828, 26, 0, 589830, 26, 1048584, 655354, 26, 1048584, 655356, 26, 0, 655358, 26, 1048584, 262144, 28, 9, 262146, 28, 9, 262148, 28, 9, 262150, 28, 9, 327674, 28, 9, 327676, 28, 9, 327678, 28, 9, 393223, 28, 1441799, 458745, 28, 1048583, 524295, 28, 1441799, 589817, 28, 1048583, 589824, 28, 1048584, 589826, 28, 1048584, 589828, 28, 1048584, 589830, 28, 1048584, 655354, 28, 1048584, 655356, 28, 1048584, 655358, 28, 1048584, 262144, 30, 9, 262146, 30, 9, 262148, 30, 9, 262150, 30, 9, 327674, 30, 9, 327676, 30, 9, 327678, 30, 9, 393223, 30, 1441799, 458745, 30, 1048583, 524295, 30, 1441799, 589817, 30, 1048583, 589824, 30, 1048584, 589826, 30, 1048584, 589828, 30, 1048584, 589830, 30, 1048584, 655354, 30, 1048584, 655356, 30, 1048584, 655358, 30, 1048584, 393216, 31, 655367, 393218, 31, 655367, 393220, 31, 655367, 393222, 31, 655367, 458746, 31, 655367, 458748, 31, 655367, 458750, 31, 655367, 524288, 31, 655367, 524290, 31, 655367, 524292, 31, 655367, 524294, 31, 655367, 589818, 31, 655367, 589820, 31, 655367, 589822, 31, 655367, 131072, 65531, 7, 131074, 65531, 7, 131076, 65531, 7, 131078, 65531, 7, 131080, 65531, 7, 131082, 65531, 7, 131084, 65531, 7, 131086, 65531, 7, 0, 65532, 9, 2, 65532, 9, 4, 65532, 9, 6, 65532, 9, 8, 65532, 9, 10, 65532, 9, 12, 65532, 9, 14, 65532, 9, 131087, 65532, 1441799, 196607, 65532, 1048583, 196608, 65532, 655368, 196610, 65532, 655368, 196612, 65532, 655368, 196614, 65532, 655368, 196616, 65532, 655368, 196618, 65532, 655368, 196620, 65532, 655368, 196622, 65532, 655368, 131074, 65533, 655367, 131076, 65533, 655367, 131078, 65533, 655367, 131080, 65533, 655367, 131082, 65533, 655367, 131084, 65533, 655367, 0, 65534, 9, 14, 65534, 9, 131073, 65534, 1441799, 131085, 65534, 1048583, 131087, 65534, 1441799, 196607, 65534, 1048583, 196608, 65534, 655368, 196622, 65534, 655368, 131074, 65535, 7, 131076, 65535, 7, 131078, 65535, 7, 131080, 65535, 7, 131082, 65535, 7 ) }
+__meta__ = { "_editor_clip_":0, "_editor_floor_":Vector3( 0, 9, 0 ) }
+
+[node name="im" type="ImmediateGeometry" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+layers = 1
+geometry/visible = true
+geometry/material_override = SubResource( 4 )
+geometry/cast_shadow = 1
+geometry/receive_shadows = true
+geometry/range_begin = 0.0
+geometry/range_end = 0.0
+geometry/extra_cull_margin = 0.0
+geometry/billboard = false
+geometry/billboard_y = false
+geometry/depth_scale = false
+geometry/visible_in_all_rooms = false
+geometry/use_baked_light = false
+geometry/baked_light_tex_id = 0
+
+[node name="npc" parent="." instance=ExtResource( 2 )]
+
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, 21 )
+script/script = SubResource( 5 )
+walk_speed = 12.0
+debug_mode = true
+debug_path = NodePath("../im")
+debug_wpt = NodePath("../wpt")
+navigation = NodePath("../Navigation")
+target_group = "prey"
+vision_range = 17
+
+[node name="model" parent="npc" instance=ExtResource( 3 )]
+
+[node name="RigidBody" type="RigidBody" parent="."]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.6853, 40.8307 )
+input/ray_pickable = true
+input/capture_on_drag = false
+shape_count = 1
+shapes/0/shape = SubResource( 6 )
+shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+shapes/0/trigger = false
+collision/layers = 1
+collision/mask = 1
+mode = 0
+mass = 1.0
+friction = 1.0
+bounce = 1.0
+gravity_scale = 1.0
+custom_integrator = false
+continuous_cd = false
+contacts_reported = 0
+contact_monitor = false
+sleeping = false
+can_sleep = true
+axis_lock = 0
+velocity/linear = Vector3( 10, 0, 0 )
+velocity/angular = Vector3( 0, 0, 0 )
+damp_override/linear = -1.0
+damp_override/angular = -1.0
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 6 )
+trigger = false
+_update_shape_index = 0
+
+[node name="TestCube" type="TestCube" parent="RigidBody"]
+
+_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform/local = Transform( 0.263463, 0, 0, 0, 0.263463, 0, 0, 0, 0.263463, 0, 0, 0 )
+layers = 1
+geometry/visible = true
+geometry/material_override = null
+geometry/cast_shadow = 1
+geometry/receive_shadows = true
+geometry/range_begin = 0.0
+geometry/range_end = 0.0
+geometry/extra_cull_margin = 0.0
+geometry/billboard = false
+geometry/billboard_y = false
+geometry/depth_scale = false
+geometry/visible_in_all_rooms = false
+geometry/use_baked_light = false
+geometry/baked_light_tex_id = 0
+
+[node name="player" parent="." groups=[ "prey" ] instance=ExtResource( 4 )]
+
+transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.4588, 52.5335 )
+
+[connection signal="action_changed" from="npc" to="npc/model" method="_on_npc_action_changed"]
+
+[connection signal="walk_speed_changed" from="npc" to="npc/model" method="_on_npc_walk_speed_changed"]
+
+[connection signal="attack_ended" from="npc/model" to="npc" method="_on_model_attack_ended"]
+
+[connection signal="attack_hit" from="npc/model" to="npc" method="_on_model_attack_hit"]
+
+
