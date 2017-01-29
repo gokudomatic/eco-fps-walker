@@ -86,6 +86,17 @@ The signal action_changed will be triggered.
 
 Beware that a wrong state name will cause an error and make the bot unstable.
 
+## API
+### walker_core
+
+Field | Type | Default | Description
+-|-|-|-
+dynamic_speed|bool|false|Activate the system to reduce speed when the bot is avoiding collision.
+
+### basic_bot
+
+### guard_bot
+
 ## Tips and pitfalls
 
 ### Debug mode
