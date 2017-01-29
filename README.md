@@ -90,8 +90,8 @@ Beware that a wrong state name will cause an error and make the bot unstable.
 ### walker_core
 
 Field | Type | Default | Description
--|-|-|-
-dynamic_speed|bool|false|Activate the system to reduce speed when the bot is avoiding collision.
+:---: | :---: | :---: | ---
+dynamic_speed | bool | false | Activate the system to reduce speed when the bot is avoiding collision.
 
 ### basic_bot
 
