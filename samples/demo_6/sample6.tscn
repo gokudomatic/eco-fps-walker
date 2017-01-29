@@ -99,6 +99,7 @@ environment = SubResource( 1 )
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.34753, 0 )
 body_radius = 0.4
 leg_length = 0.1
+walk_speed = 6.0
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
 
@@ -109,6 +110,7 @@ navigation = NodePath("../Navigation")
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.29408, 3.34753, 4.19591 )
 body_radius = 0.4
 leg_length = 0.1
+walk_speed = 6.0
 target = NodePath("../target")
 
 [node name="model" parent="npc1" instance=ExtResource( 2 )]

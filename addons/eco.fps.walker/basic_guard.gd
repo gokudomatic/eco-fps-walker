@@ -48,9 +48,16 @@ func scan_for_target():
 	
 	var target_dist=null
 	
+	var ray_origin=target_ray.get_global_transform().origin
+	
 	var trans=get_global_transform()
 	for candidate in get_tree().get_nodes_in_group(target_group):
-		var candidate_dist=trans.origin.distance_to(candidate.get_global_transform().origin)
+		var candidate_origin
+		if candidate.has_method("get_global_origin"):
+			candidate_origin=candidate.get_global_origin()
+		else:
+			candidate_origin=candidate.get_global_transform().origin
+		var candidate_dist=trans.origin.distance_to(candidate_origin)
 		
 		# skip if candidate is too far
 		if vision_range>0 and candidate_dist>vision_range:
@@ -61,10 +68,12 @@ func scan_for_target():
 			continue # if not, skip it
 		
 		# check if target is in sight
-		var target_trans=trans.looking_at(candidate.get_global_transform().origin,UP).orthonormalized()
+		var target_trans=trans.looking_at(candidate_origin,UP).orthonormalized()
 		if (target_trans.basis.z-trans.basis.z).length()<vision_angle:
-			set_target(candidate)
-			target_dist=candidate_dist
+			var r=get_world().get_direct_space_state().intersect_ray(ray_origin,candidate_origin,[candidate,self])
+			if r.empty():
+				set_target(candidate)
+				target_dist=candidate_dist
 	
 	if target_dist!=null:
 		calculate_destination(true)

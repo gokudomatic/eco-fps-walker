@@ -5,6 +5,9 @@ export(float) var body_height=1
 export(float) var leg_length=0.3
 export(float) var sight_height=2
 export(float) var walk_speed = 3;
+export(bool) var dynamic_speed = false
+export(float) var max_speed_accel=1.01
+export(float) var turn_speed_deccel = 1;
 export(float) var max_accel = 0.02;
 export(float) var air_accel = 0.05;
 
@@ -36,6 +39,7 @@ var waypoint_timeout=0
 var is_temp_waypoint=false
 var is_temp_side_right=false
 var was_UTurn=false
+onready var current_speed=walk_speed
 
 const action_states=["sleep","move","turn","wait"]
 var fsm_action
@@ -121,6 +125,10 @@ func do_current_action(state):
 	var aim = current_t.basis;
 	var direction = Vector3();
 	
+	if dynamic_speed and current_speed<walk_speed:
+		current_speed=min(walk_speed,current_speed*max_speed_accel)
+		
+	
 	# moving
 	if current_action.move and not no_move:
 		#move forward
@@ -132,7 +140,7 @@ func do_current_action(state):
 	if leg_ray.is_colliding():
 		# is walking on the ground
 		# calculate the impulse vector for horizontal movement. Vertical velocity is kept but not amplified
-		var diff = Vector3() + direction * walk_speed - state.get_linear_velocity();
+		var diff = Vector3() + direction * current_speed - state.get_linear_velocity();
 		var vertdiff = aim[1] * diff.dot(aim[1]); # vertical velocity
 		diff -= vertdiff; # we remove vertical velocity temporarely for working only with horizontal velocity
 		diff = diff.normalized() * clamp(diff.length(), 0, max_accel / state.get_step());
@@ -181,7 +189,11 @@ func do_current_action(state):
 				calculate_destination()
 				fsm_action.set_state("turn")
 				state.set_linear_velocity(Vector3(0,0,0))
+				if dynamic_speed:
+					current_speed=max(current_speed-turn_speed_deccel,1)
 			elif is_new_hole_l or is_new_hole_r:
+				if dynamic_speed:
+					current_speed=max(current_speed-turn_speed_deccel,1)
 				if is_new_hole_l:
 					new_vx=0+PI/6
 				else:
@@ -202,7 +214,7 @@ func do_current_action(state):
 	
 	state.integrate_forces();
 	
-	var vel_speed=state.get_linear_velocity().length()/walk_speed;
+	var vel_speed=state.get_linear_velocity().length()/current_speed;
 	var speed=state.get_angular_velocity().length()*0.1+vel_speed;
 	emit_signal("walk_speed_changed",speed)
 
@@ -237,6 +249,8 @@ func calculate_destination(force_recalculate=false):
 	current_direction=get_global_transform().looking_at(current_waypoint+offset,UP).orthonormalized().basis.z
 	if (current_direction+old_direction).length()<1.2:
 		fsm_action.set_state("turn")
+		if dynamic_speed:
+			current_speed=max(current_speed-turn_speed_deccel,1)
 	
 	if debug_mode and debug_wpt!=null:
 		var n=get_node(debug_wpt)

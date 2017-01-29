@@ -279,6 +279,7 @@ transform/local = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 transform/local = Transform( -0.99864, 0, 0.0521425, 0, 1, 0, -0.0521425, 0, -0.99864, 10.6866, 0.379697, 10.1786 )
 collision/mask = 2
 walk_speed = 8.0
+turn_speed_deccel = 4.0
 target = NodePath("../target")
 navigation = NodePath("../Navigation")
 

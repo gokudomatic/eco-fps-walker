@@ -172,7 +172,9 @@ environment = SubResource( 1 )
 
 transform/local = Transform( -0.0580618, 0, 0.998313, 0, 1, 0, -0.998313, 0, -0.0580618, 28.3643, 28.0137, -45.4881 )
 body_radius = 0.4
-walk_speed = 2.0
+walk_speed = 6.0
+dynamic_speed = true
+turn_speed_deccel = 3.0
 debug_mode = true
 debug_path = NodePath("../im")
 debug_wpt = NodePath("../wpt")

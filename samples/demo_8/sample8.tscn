@@ -241,6 +241,8 @@ geometry/baked_light_tex_id = 0
 
 transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.8774, 3.62539, 5.34797 )
 script/script = SubResource( 4 )
+walk_speed = 6.0
+turn_speed_deccel = 3.0
 debug_mode = true
 debug_path = NodePath("../im")
 debug_wpt = NodePath("../wpt")
