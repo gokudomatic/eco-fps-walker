@@ -137,7 +137,12 @@ This case is definitely the worst scenario case for the bot. Without path findin
 
 ### Speed
 The speed factor, which is a parameter, has a great impact in the collision detection quality. If you set a high speed to the bot, it won't be able to avoid collisions and holes as well as when it's walking at lower speed. Especially near a cliff or of a bridge, the risk to fall is related to the speed. It has also to do with the inertia of the rigid body of the bot, where higher speed means longer time to brake.
-One way to avoid that would be to extend the script to dynamically change the speed when the bot is near a hole. Usually the problem arises when the bot goes in a U-turn at high speed.
+#### Dynamic speed
+One way to avoid that would be to use the mode dynamic_speed or to extend the script to dynamically change the speed when the bot is near a hole. Usually the problem arises when the bot goes in a U-turn at high speed.
+The dynamic_speed mode lowers automatically the speed when a new hole or collision is detected. And gradually it increases to its maximum when no new hole or collision is detected for a while. 
+The decrease of speed is a substraction : speed = max( 1 , speed - decrease_factor ) # minimum speed allowed is 1
+The increase of speed is an acceleration : speed = speed * increase_factor
+Therefore if the bot is stuck in a dead end its speed will quickly drop to its minimum (1) and its quality of path detection will be at its best. And then, when its out of its "complicated" part, it will accelerate until it reaches its maximum speed. It works quite well for tricky places like stairs, but since the bot tend to slide along walls when the traject has many corners, the bot tend to slow down a lot of times and its average speed might be rather slow. Only one way to really fix that problem is that the path finding algorithm implements a body radius parameter, which is missing for the moment (Godot V2.1.2).
 
 ### Strange behaviors
 Sometimes the bot can suddenly backtrack or turn in circles for a little moment. Those are the limitations of the AI implementation and the path finding of Godot. It's optimized for performance but at the cost of some glitches in the path finding. And in rare special cases the bot can fall down a cliff. To reduce the risk that happens you can either adapt the level design or extend the script to fix this particular case.
