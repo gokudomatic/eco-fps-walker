@@ -111,16 +111,14 @@ navigation | Navigation | null | Navigation node used for path finding. Must not
 ### basic_bot
 *Extends walker_core*
 
-Field | Type | Default | Description
-:---: | :---: | :---: | ---
-body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
-
 ### guard_bot
 *Extends basic_bot*
 
 Field | Type | Default | Description
 :---: | :---: | :---: | ---
-body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
+target_group | string | | Group name of nodes to target when at sight.
+vision_angle | float | 0.53 | Angle of sight of the bot. Technically it's the cosinus of the angle of sight rather than the angle itself.
+vision_range | int | 0 | Distance up to where the bot can detect a target. 0 = infinite.
 
 ## Tips and pitfalls
 
