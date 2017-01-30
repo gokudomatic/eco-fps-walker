@@ -96,19 +96,17 @@ body_radius | float | 0.8 | Radius of the capsule being the collision body of th
 body_height | float | 1 | Height of the capsule being the collision body of the bot.
 leg_length | float | 0.3 | Length of the leg of the bot. Since the leg is a sphere, it's its radius.
 sight_height | float | 2 | Height of the rays detecting the holes and collisions. Setting it higher means it can see the holes further, but it would detect false collisions with the ceiling if set too high. Too low and it won't see holes in time.
-walk_speed | float | 3 | Maximum speed
+walk_speed | float | 3 | Maximum speed.
 dynamic_speed | bool | false | Activate the system to reduce speed when the bot is avoiding collision.
-max_speed_accel | float | 1.01 | d 
-turn_speed_deccel | float | 1 | d
-max_accel | float | 0.02 | d
-air_accel | float | 0.05 | d
-debug_mode | bool | false | d
-debug_path | NodePath | null | d
-debug_wpt | NodePath | null | d
-target | NodePath | null | d
-navigation | NodePath | null | d
-
-
+max_speed_accel | float | 1.01 | When dynamic_speed is active, acceleration factor of the current maximum speed. 1.01 == 1% of acceleration.
+turn_speed_deccel | float | 1 | When dynamic_speed is active, acceleration factor of the current maximum speed.
+max_accel | float | 0.02 | Acceleration when walking.
+air_accel | float | 0.05 | Acceleration when falling.
+debug_mode | bool | false | Activates the debug mode.
+debug_path | ImmediateGeometry | null | When in debug mode, this node is used to draw the calculated path.
+debug_wpt | Spatial | null | When in debug mode, this node is used to display the current waypoint to reach.
+target | Spatial | null | Target to reach.
+navigation | Navigation | null | Navigation node used for path finding. Must not be changed in the middle of the game! Jumping from one navmesh to another one doesn't work.
 
 ### basic_bot
 
