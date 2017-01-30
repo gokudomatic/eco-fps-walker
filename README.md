@@ -88,10 +88,26 @@ Beware that a wrong state name will cause an error and make the bot unstable.
 
 ## API
 ### walker_core
-
+*Extends RigidBody*
 Field | Type | Default | Description
 :---: | :---: | :---: | ---
+body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
+body_height | float | 1 | Height of the capsule being the collision body of the bot.
+leg_length | float | 0.3 | Length of the leg of the bot. Since the leg is a sphere, it's its radius.
+sight_height | float | 2 | Height of the rays detecting the holes and collisions. Setting it higher means it can see the holes further, but it would detect false collisions with the ceiling if set too high. Too low and it won't see holes in time.
+walk_speed | float | 3 | Maximum speed
 dynamic_speed | bool | false | Activate the system to reduce speed when the bot is avoiding collision.
+max_speed_accel | float | 1.01 | 
+turn_speed_deccel | float | 1 | 
+max_accel | float | 0.02 | 
+air_accel | float | 0.05 | 
+debug_mode | bool | false | 
+debug_path | NodePath | null | 
+debug_wpt | NodePath | null | 
+target | NodePath | null | 
+navigation | NodePath | null | 
+
+
 
 ### basic_bot
 
