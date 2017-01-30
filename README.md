@@ -109,8 +109,18 @@ target | Spatial | null | Target to reach.
 navigation | Navigation | null | Navigation node used for path finding. Must not be changed in the middle of the game! Jumping from one navmesh to another one doesn't work.
 
 ### basic_bot
+*Extends walker_core*
+
+Field | Type | Default | Description
+:---: | :---: | :---: | ---
+body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
 
 ### guard_bot
+*Extends basic_bot*
+
+Field | Type | Default | Description
+:---: | :---: | :---: | ---
+body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
 
 ## Tips and pitfalls
 
