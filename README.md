@@ -120,6 +120,14 @@ target_group | string | | Group name of nodes to target when at sight.
 vision_angle | float | 0.53 | Angle of sight of the bot. Technically it's the cosinus of the angle of sight rather than the angle itself.
 vision_range | int | 0 | Distance up to where the bot can detect a target. 0 = infinite.
 
+## State machines
+The 3 kinds of bot follow a configuration of state machine.
+### walker_core
+
+### basic_bot
+
+### guard_bot
+
 ## Tips and pitfalls
 
 ### Debug mode
