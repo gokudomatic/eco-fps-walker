@@ -89,6 +89,7 @@ Beware that a wrong state name will cause an error and make the bot unstable.
 ## API
 ### walker_core
 *Extends RigidBody*
+
 Field | Type | Default | Description
 :---: | :---: | :---: | ---
 body_radius | float | 0.8 | Radius of the capsule being the collision body of the bot.
