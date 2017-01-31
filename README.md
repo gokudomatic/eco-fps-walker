@@ -108,8 +108,14 @@ debug_wpt | Spatial | null | When in debug mode, this node is used to display th
 target | Spatial | null | Target to reach.
 navigation | Navigation | null | Navigation node used for path finding. Must not be changed in the middle of the game! Jumping from one navmesh to another one doesn't work.
 
+State diagram
+![structure](/diagram_walker_core.png)
+
 ### basic_bot
 *Extends walker_core*
+
+State diagram
+![structure](/diagram_basic_bot.png)
 
 ### guard_bot
 *Extends basic_bot*
@@ -119,6 +125,9 @@ Field | Type | Default | Description
 target_group | string | | Group name of nodes to target when at sight.
 vision_angle | float | 0.53 | Angle of sight of the bot. Technically it's the cosinus of the angle of sight rather than the angle itself.
 vision_range | int | 0 | Distance up to where the bot can detect a target. 0 = infinite.
+
+State diagram
+![structure](/diagram_basic_guard.png)
 
 ## State machines
 The 3 kinds of bot follow a configuration of state machine.
